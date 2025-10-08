@@ -3,27 +3,54 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Recupera tu contraseña de MiTurnoSalud de forma rápida y segura.">
   <title>Recuperar contraseña - MiTurnoSalud</title>
   <link rel="icon" href="assets/img/logo.svg">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <!-- Header -->
   <header class="site-header" role="banner">
-    <div class="site-header__brand"><a href="index.html" class="brand__name">MiTurnoSalud</a></div>
+    <div class="site-header__brand">
+      <a href="index.html" class="brand__link">
+        <img src="assets/img/logo.svg" alt="" aria-hidden="true" class="brand__logo">
+        <span class="brand__name">MiTurnoSalud</span>
+      </a>
+    </div>
   </header>
 
+  <!-- Main -->
   <main class="container">
-    <h1>Recuperar Contraseña</h1>
-    <p class="muted">Introduce tu correo electrónico para restablecer la contraseña</p>
+    <h1>Recuperar contraseña</h1>
+    <p class="muted">Introduce tu correo electrónico para restablecer el acceso a tu cuenta.</p>
 
     <form class="form" action="#" method="post" novalidate>
       <div class="form__group">
         <label for="email">Correo electrónico</label>
-        <input id="email" name="email" type="email" required>
+        <input
+          id="email"
+          name="email"
+          type="email"
+          required
+          autocomplete="email"
+          inputmode="email"
+          autocapitalize="off"
+          spellcheck="false"
+          placeholder="tu@correo.com">
       </div>
+
       <button type="submit" class="btn btn--primary">Enviar</button>
-      <p class="form__help">¿Ya tienes una cuenta? <a href="index.html">Iniciar sesión</a></p>
+
+      <p class="form__help">
+        ¿Ya tienes una cuenta? <a href="index.html">Iniciar sesión</a>
+      </p>
     </form>
   </main>
+
+  <!-- Scripts -->
+  <script src="js/app.js" defer></script>
+  <script src="js/auth.js" defer></script>
+  <script src="js/recuperar.js" defer></script>
 </body>
 </html>
