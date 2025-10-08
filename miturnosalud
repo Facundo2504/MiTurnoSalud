@@ -1,0 +1,13 @@
+mi-turno-salud/
+├─ index.html                <!-- Login -->
+├─ registro.html
+├─ recuperar.html
+├─ dashboard.html
+├─ agendar-especialidad.html
+├─ agendar-medico.html
+├─ agendar-fecha-hora.html
+├─ agendar-institucion.html
+├─ confirmar-turno.html
+└─ assets/
+   ├─ img/logo.svg
+   └─ icons/*.svg
