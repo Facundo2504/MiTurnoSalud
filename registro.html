@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MiTurnoSalud — Registro</title>
+  <link rel="icon" href="assets/img/logo.svg" />
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;background:#f6f8fa;padding:2rem}
+    .card{max-width:540px;margin:1.5rem auto;background:#fff;padding:1.25rem;border-radius:8px;box-shadow:0 2px 8px rgba(0,0,0,.06)}
+    input, button{width:100%;padding:.6rem;margin-top:.5rem;border:1px solid #ddd;border-radius:6px}
+  </style>
+</head>
+<body>
+  <main class="card">
+    <header><img src="assets/img/logo.svg" alt="Logo" style="height:42px"/><h2>Crear cuenta</h2></header>
+    <form action="#" method="post" id="registerForm">
+      <label>Nombre completo</label>
+      <input name="name" type="text" required />
+
+      <label>Teléfono</label>
+      <input name="phone" type="tel" />
+
+      <label>Correo</label>
+      <input name="email" type="email" required />
+
+      <label>Contraseña</label>
+      <input name="password" type="password" required />
+
+      <button type="submit">Crear cuenta</button>
+    </form>
+    <p style="margin-top:.75rem">¿Ya tienes cuenta? <a href="index.html">Inicia sesión</a></p>
+  </main>
+</body>
+</html>

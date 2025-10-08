@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>MiTurnoSalud — Panel</title>
+  <link rel="icon" href="assets/img/logo.svg" />
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;background:#f2f4f7;margin:0}
+    header{display:flex;align-items:center;gap:1rem;padding:1rem;background:#fff;border-bottom:1px solid #eee}
+    header img{height:36px}
+    .wrap{display:flex;gap:1rem;padding:1rem}
+    nav{width:220px;background:#fff;padding:1rem;border-radius:8px}
+    main{flex:1}
+    a.button{display:block;padding:.6rem .8rem;background:#0366d6;color:#fff;text-decoration:none;border-radius:6px;margin-bottom:.6rem}
+  </style>
+</head>
+<body>
+  <header>
+    <img src="assets/img/logo.svg" alt="Logo" />
+    <h1 style="font-size:1rem;margin:0">MiTurnoSalud</h1>
+  </header>
+
+  <div class="wrap">
+    <nav>
+      <a class="button" href="agendar-especialidad.html">Agendar por especialidad</a>
+      <a class="button" href="agendar-medico.html">Agendar por médico</a>
+      <a class="button" href="agendar-institucion.html">Agendar por institución</a>
+      <a class="button" href="confirmar-turno.html">Confirmar turno</a>
+    </nav>
+
+    <main>
+      <section style="background:#fff;padding:1rem;border-radius:8px">
+        <h2>Próximos turnos</h2>
+        <p>Aquí aparecerán tus turnos agendados.</p>
+        <!-- Listado de turnos -> generar dinámicamente -->
+      </section>
+    </main>
+  </div>
+</body>
+</html>

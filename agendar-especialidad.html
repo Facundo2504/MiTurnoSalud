@@ -1,0 +1,31 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Agendar — Especialidad</title>
+  <link rel="icon" href="assets/img/logo.svg" />
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;background:#f6f8fa;margin:0;padding:1rem}
+    .card{max-width:720px;margin:auto;background:#fff;padding:1rem;border-radius:8px}
+    select,input,button{width:100%;padding:.7rem;margin-top:.5rem;border-radius:6px;border:1px solid #ddd}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <header><h2>Seleccionar especialidad</h2></header>
+    <form action="agendar-medico.html" method="get">
+      <label>Especialidad</label>
+      <select name="especialidad" required>
+        <option value="">-- Elige una --</option>
+        <option>Cardiología</option>
+        <option>Pediatría</option>
+        <option>Dermatología</option>
+        <option>Traumatología</option>
+      </select>
+
+      <button type="submit">Siguiente — Elegir médico</button>
+    </form>
+  </div>
+</body>
+</html>

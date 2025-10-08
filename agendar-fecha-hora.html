@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Agendar — Fecha y hora</title>
+  <link rel="icon" href="assets/img/logo.svg" />
+  <style>
+    body{font-family:Arial,Helvetica,sans-serif;background:#f6f8fa;padding:1rem}
+    .card{max-width:520px;margin:auto;background:#fff;padding:1rem;border-radius:8px}
+    input,button{width:100%;padding:.6rem;margin-top:.5rem;border-radius:6px;border:1px solid #ddd}
+    .times{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:.5rem}
+    .time{padding:.5rem;border:1px solid #eee;border-radius:6px;text-align:center;background:#fafafa}
+  </style>
+</head>
+<body>
+  <div class="card">
+    <h2>Seleccionar fecha y hora</h2>
+    <form action="confirmar-turno.html" method="get">
+      <label>Fecha</label>
+      <input type="date" name="fecha" required />
+
+      <label>Hora</label>
+      <div class="times">
+        <label class="time"><input type="radio" name="hora" value="09:00" /> 09:00</label>
+        <label class="time"><input type="radio" name="hora" value="10:30" /> 10:30</label>
+        <label class="time"><input type="radio" name="hora" value="14:00" /> 14:00</label>
+        <label class="time"><input type="radio" name="hora" value="15:30" /> 15:30</label>
+        <label class="time"><input type="radio" name="hora" value="16:45" /> 16:45</label>
+      </div>
+
+      <button type="submit">Continuar — Confirmar</button>
+    </form>
+  </div>
+</body>
+</html>
