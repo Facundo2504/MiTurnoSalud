@@ -1,37 +1,99 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Agendar — Fecha y hora</title>
-  <link rel="icon" href="assets/img/logo.svg" />
- <link rel="stylesheet" href="styles.css">
- <style>
-    body{font-family:Arial,Helvetica,sans-serif;background:#f6f8fa;padding:1rem}
-    .card{max-width:520px;margin:auto;background:#fff;padding:1rem;border-radius:8px}
-    input,button{width:100%;padding:.6rem;margin-top:.5rem;border-radius:6px;border:1px solid #ddd}
-    .times{display:grid;grid-template-columns:repeat(3,1fr);gap:.5rem;margin-top:.5rem}
-    .time{padding:.5rem;border:1px solid #eee;border-radius:6px;text-align:center;background:#fafafa}
-  </style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Selecciona la fecha y hora para tu turno médico en MiTurnoSalud.">
+  <title>Agendar turno — Fecha y hora | MiTurnoSalud</title>
+  <link rel="icon" href="assets/img/logo.svg">
+  <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <div class="card">
-    <h2>Seleccionar fecha y hora</h2>
-    <form action="confirmar-turno.html" method="get">
-      <label>Fecha</label>
-      <input type="date" name="fecha" required />
+  <!-- Header -->
+  <header class="site-header" role="banner">
+    <div class="site-header__brand">
+      <a href="dashboard.html" class="brand__link">
+        <img src="assets/img/logo.svg" alt="" aria-hidden="true" class="brand__logo">
+        <span class="brand__name">MiTurnoSalud</span>
+      </a>
+    </div>
+  </header>
 
-      <label>Hora</label>
-      <div class="times">
-        <label class="time"><input type="radio" name="hora" value="09:00" /> 09:00</label>
-        <label class="time"><input type="radio" name="hora" value="10:30" /> 10:30</label>
-        <label class="time"><input type="radio" name="hora" value="14:00" /> 14:00</label>
-        <label class="time"><input type="radio" name="hora" value="15:30" /> 15:30</label>
-        <label class="time"><input type="radio" name="hora" value="16:45" /> 16:45</label>
+  <!-- Layout -->
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" aria-label="Navegación secundaria">
+      <nav role="navigation">
+        <ul role="list">
+          <li class="nav__item nav__item--active">
+            <a href="dashboard.html" aria-current="page">Turnos</a>
+            <ul class="nav__sublist">
+              <li><a href="dashboard.html">Historial Turnos</a></li>
+              <li><a href="agendar-especialidad.html">Agendar Turno</a></li>
+            </ul>
+          </li>
+          <li><a href="#">Perfil</a></li>
+          <li><a href="#">Notificaciones</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="content">
+      <h1>Agendar Turno</h1>
+
+      <!-- Stepper -->
+      <div class="stepper" aria-label="Progreso de agendamiento">
+        <ol class="stepper__list">
+          <li class="stepper__item stepper__item--done"><span>Paso 1 · Especialidad</span></li>
+          <li class="stepper__item stepper__item--done"><span>Paso 2 · Médico</span></li>
+          <li class="stepper__item stepper__item--current"><span>Paso 3 · Fecha y hora</span></li>
+          <li class="stepper__item"><span>Paso 4 · Institución</span></li>
+        </ol>
       </div>
 
-      <button type="submit">Continuar — Confirmar</button>
-    </form>
+      <!-- Panel principal -->
+      <section class="panel">
+        <h2>Seleccionar Fecha y Hora</h2>
+        <p class="muted">Elige el día y el horario que prefieras para tu turno médico.</p>
+
+        <form class="form" action="agendar-institucion.html" method="get" novalidate>
+          <div class="form__group">
+            <label for="fecha">Fecha</label>
+            <input
+              id="fecha"
+              name="fecha"
+              type="date"
+              required
+              min=""
+              aria-describedby="ayuda-fecha">
+            <p id="ayuda-fecha" class="form__help">No se pueden seleccionar fechas anteriores a hoy.</p>
+          </div>
+
+          <fieldset class="form__group">
+            <legend>Selecciona un horario disponible</legend>
+            <div class="times">
+              <label class="time"><input type="radio" name="hora" value="09:00" required> 09:00</label>
+              <label class="time"><input type="radio" name="hora" value="10:30"> 10:30</label>
+              <label class="time"><input type="radio" name="hora" value="14:00"> 14:00</label>
+              <label class="time"><input type="radio" name="hora" value="15:30"> 15:30</label>
+              <label class="time"><input type="radio" name="hora" value="16:45"> 16:45</label>
+            </div>
+          </fieldset>
+
+          <div class="actions">
+            <button type="button" class="btn btn--ghost" onclick="history.back()">Volver</button>
+            <button type="submit" class="btn btn--primary">Continuar — Elegir institución</button>
+          </div>
+        </form>
+      </section>
+    </main>
   </div>
+
+  <!-- Scripts -->
+  <script src="js/app.js" defer></script>
+  <script src="js/auth.js" defer></script>
+  <script src="js/agendar-fecha-hora.js" defer></script>
 </body>
 </html>

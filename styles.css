@@ -334,3 +334,147 @@ input::placeholder{ color:var(--gray-400) }
   .stepper__list{ gap:.5rem }
   .stepper__item::after{ left:55%; right:-55% } /* ajusta línea */
 }
+
+/* =========================================================
+   Extensiones UI – MiTurnoSalud
+   (añadir al final de styles.css)
+   - Sidebar: soporte para .brand__link y .nav__link como <button>
+   - Cards seleccionables (.js-card)
+   - Bloques details/summary (Servicios)
+   - Horarios (.times / .time)
+   - Botones: estado disabled
+   - Modo oscuro automático (si aún no lo añadiste)
+   ========================================================= */
+
+/* ---------------------------
+   Header / Brand
+----------------------------*/
+.brand__link{
+  display:inline-flex; align-items:center; gap:.75rem;
+  text-decoration:none; color:inherit;
+}
+
+/* ---------------------------
+   Sidebar accesible (cuando hay .nav__link como <button>)
+----------------------------*/
+.nav__link{
+  background:none; border:none; padding:.5rem .25rem; font:inherit;
+  color:var(--gray-800); font-weight:700; cursor:pointer; text-align:left; width:100%;
+}
+.nav__item--active > .nav__link{ color:var(--brand-700); }
+
+/* ---------------------------
+   Tarjetas seleccionables (Paso 4)
+----------------------------*/
+.js-card{ transition: box-shadow .2s ease, transform .06s ease; }
+.js-card:hover{ box-shadow: var(--shadow-2); transform: translateY(-1px); }
+.js-card[aria-selected="true"]{
+  outline: 3px solid var(--brand-500);
+  box-shadow: 0 0 0 4px color-mix(in oklab, var(--brand-500) 20%, white);
+}
+
+/* ---------------------------
+   Details / summary (Servicios)
+----------------------------*/
+details{ margin-top:.5rem; }
+details > summary{
+  list-style:none; cursor:pointer; user-select:none;
+  padding:.25rem .25rem; border-radius:.4rem;
+}
+details > summary:hover{ background: var(--gray-100); }
+details[open] > summary{ color: var(--brand-700); }
+
+/* ---------------------------
+   Horarios (Paso 3)
+----------------------------*/
+.times{
+  display:grid;
+  grid-template-columns: repeat(3, minmax(0,1fr));
+  gap:.5rem; margin-top:.5rem;
+}
+@media (max-width: 520px){
+  .times{ grid-template-columns: repeat(2, minmax(0,1fr)); }
+}
+.time{
+  display:flex; align-items:center; justify-content:center; gap:.5rem;
+  padding:.6rem .5rem; border:1px solid var(--gray-300);
+  border-radius:.6rem; background:#fff; cursor:pointer; font-weight:700;
+}
+.time input[type="radio"]{ accent-color: var(--brand-500); }
+
+/* ---------------------------
+   Definition list (Confirmar)
+----------------------------*/
+.definition__row details summary{ font-weight:600; }
+.definition__row details ul{ margin:.5rem 0 0; padding-left:1rem; }
+
+/* ---------------------------
+   Botones – estados
+----------------------------*/
+.btn[disabled], .btn:disabled{
+  opacity:.6; cursor:not-allowed; transform:none !important; box-shadow: var(--shadow-1);
+}
+
+/* =========================================================
+   MODO OSCURO (si aún no lo añadiste)
+   ========================================================= */
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg:#0e1420;
+    --text:#e6e9f2;
+
+    --gray-50:#121a27;
+    --gray-100:#131a26;
+    --gray-200:#1b2433;
+    --gray-300:#283142;
+    --gray-400:#5a6a86;
+    --gray-500:#8fa1bd;
+    --gray-600:#a3b0c7;
+    --gray-700:#c1cbe0;
+    --gray-800:#d9dff0;
+    --gray-900:#eef2ff;
+
+    --shadow-1:0 2px 6px rgba(0,0,0,.35);
+    --shadow-2:0 12px 28px rgba(0,0,0,.5);
+  }
+
+  body{ background: var(--gray-50); color: var(--text); }
+
+  .site-header{
+    background: linear-gradient(90deg, #5f4ef2 0%, #46b9c6 100%);
+  }
+
+  .sidebar{
+    background: var(--gray-100);
+    border-right: 1px solid var(--gray-300);
+  }
+  .sidebar a{ color: var(--gray-700); }
+  .nav__item--active > a,
+  .sidebar a:hover{ color: #ffffff; }
+
+  .content{ background: var(--bg); }
+
+  .panel, .card{
+    background:#0f1523;
+    border:1px solid var(--gray-300);
+    box-shadow: var(--shadow-1);
+  }
+  .card__header{ background: #121a2b; border-bottom:1px solid var(--gray-300); }
+  .card__title{ color:#fff; }
+  .card__subtitle{ color: var(--gray-600); }
+
+  input, select, textarea{
+    background:#0f1523; color:var(--text);
+    border:1px solid var(--gray-300);
+  }
+  input::placeholder{ color:var(--gray-500) }
+
+  .definition__row{
+    background:#0f1523; border-color:var(--gray-300);
+  }
+
+  .btn--ghost{ --_fg: var(--brand-200); border-color: var(--brand-300); }
+}
+/* =========================================================
+   Fin de styles.css
+   ========================================================= */

@@ -1,35 +1,76 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Confirmar turno</title>
-  <link rel="icon" href="assets/img/logo.svg" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Confirmación del turno médico en MiTurnoSalud. Revisa los datos antes de finalizar.">
+  <title>Confirmar turno | MiTurnoSalud</title>
+  <link rel="icon" href="assets/img/logo.svg">
   <link rel="stylesheet" href="styles.css">
- <style>
-    body{font-family:Arial,Helvetica,sans-serif;background:#f6f8fa;padding:1rem}
-    .card{max-width:540px;margin:auto;background:#fff;padding:1rem;border-radius:8px;text-align:left}
-    .summary{background:#fbfbff;border:1px solid #eef;margin-top:.6rem;padding:.8rem;border-radius:6px}
-    button{margin-top:.8rem;padding:.7rem;width:100%;border-radius:6px;background:#28a745;color:#fff;border:none}
-  </style>
 </head>
 <body>
-  <div class="card">
-    <h2>Confirmar turno</h2>
-    <p>Revisa los datos antes de confirmar.</p>
-
-    <div class="summary">
-      <p><strong>Médico:</strong> Dra. Ana Pérez</p>
-      <p><strong>Especialidad:</strong> Cardiología</p>
-      <p><strong>Institución:</strong> Clínica San José</p>
-      <p><strong>Fecha y hora:</strong> 2025-10-15 — 10:30</p>
+  <!-- Header -->
+  <header class="site-header" role="banner">
+    <div class="site-header__brand">
+      <a href="dashboard.html" class="brand__link">
+        <img src="assets/img/logo.svg" alt="" aria-hidden="true" class="brand__logo">
+        <span class="brand__name">MiTurnoSalud</span>
+      </a>
     </div>
+  </header>
 
-    <form action="#" method="post">
-      <label>Observaciones (opcional)</label>
-      <input name="notes" type="text" placeholder="Ej: preferir turno por la tarde" />
-      <button type="submit">Confirmar turno</button>
-    </form>
+  <!-- Layout principal -->
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" aria-label="Navegación secundaria">
+      <nav role="navigation">
+        <ul role="list">
+          <li class="nav__item nav__item--active">
+            <a href="dashboard.html" aria-current="page">Turnos</a>
+            <ul class="nav__sublist">
+              <li><a href="dashboard.html">Historial Turnos</a></li>
+              <li><a href="agendar-especialidad.html">Agendar Turno</a></li>
+            </ul>
+          </li>
+          <li><a href="#">Perfil</a></li>
+          <li><a href="#">Notificaciones</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="content">
+      <h1>Confirmar Turno</h1>
+
+      <section class="panel">
+        <p class="muted">Revisa cuidadosamente los datos de tu turno antes de confirmar.</p>
+
+        <!-- Resumen -->
+        <dl class="definition" aria-live="polite">
+          <!-- Aquí el JS insertará los datos del turno -->
+        </dl>
+
+        <!-- Observaciones -->
+        <form class="form" id="form-observaciones" action="#" method="post" novalidate>
+          <div class="form__group">
+            <label for="notes">Observaciones (opcional)</label>
+            <input id="notes" name="notes" type="text" placeholder="Ej: prefiero turno por la tarde">
+          </div>
+        </form>
+
+        <!-- Acciones -->
+        <div class="actions">
+          <!-- JS añadirá botones: Llamar, WhatsApp, Google Calendar -->
+          <a href="dashboard.html" class="btn btn--primary">Volver al inicio</a>
+        </div>
+      </section>
+    </main>
   </div>
+
+  <!-- Scripts -->
+  <script src="js/app.js" defer></script>
+  <script src="js/auth.js" defer></script>
+  <script src="js/confirmar-turno.js" defer></script>
 </body>
 </html>

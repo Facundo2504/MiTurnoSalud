@@ -1,23 +1,33 @@
 <!doctype html>
 <html lang="es">
-<head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Inicio - MiTurnoSalud</title></head>
-<link rel="stylesheet" href="styles.css">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Panel principal de MiTurnoSalud: gestiona tus turnos médicos fácilmente.">
+  <title>Inicio - MiTurnoSalud</title>
+  <link rel="icon" href="assets/img/logo.svg">
+  <link rel="stylesheet" href="styles.css">
+</head>
 <body>
   <!-- Header -->
   <header class="site-header" role="banner">
     <div class="site-header__brand">
-      <img src="assets/img/logo.svg" alt="" aria-hidden="true">
-      <a href="dashboard.html" class="brand__name">MiTurnoSalud</a>
+      <a href="dashboard.html" class="brand__link">
+        <img src="assets/img/logo.svg" alt="" aria-hidden="true" class="brand__logo">
+        <span class="brand__name">MiTurnoSalud</span>
+      </a>
     </div>
   </header>
 
   <div class="layout">
     <!-- Sidebar -->
     <aside class="sidebar" aria-label="Navegación secundaria">
-      <nav>
+      <nav role="navigation">
         <ul role="list">
-          <li class="nav__item nav__item--active"><a href="dashboard.html" aria-current="page">Turnos</a>
-            <ul>
+          <li class="nav__item nav__item--active">
+            <button class="nav__link" aria-current="page" aria-expanded="true">Turnos</button>
+            <ul role="list" class="nav__sublist">
               <li><a href="dashboard.html">Historial Turnos</a></li>
               <li><a href="agendar-especialidad.html">Agendar Turno</a></li>
             </ul>
@@ -28,35 +38,35 @@
       </nav>
     </aside>
 
+    <!-- Main -->
     <main class="content">
       <h1>Bienvenido/a</h1>
+
       <section aria-labelledby="proximos-turnos">
         <h2 id="proximos-turnos">Próximos turnos</h2>
 
-        <div class="cards">
-          <!-- Repite card turno -->
+        <div class="cards" aria-live="polite">
           <article class="card card--turno">
-            <header class="card__header"><div aria-hidden="true">📅</div>
+            <header class="card__header">
+              <div aria-hidden="true">📅</div>
               <p class="card__subtitle">10 de Noviembre de 2025, 10:00</p>
             </header>
             <div class="card__body">
-              <a class="card__title" href="#">Cardiología - Dr. Esteban González</a>
-            </div>
-          </article>
-
-          <article class="card card--turno">
-            <header class="card__header"><div aria-hidden="true">📅</div>
-              <p class="card__subtitle">10 de Noviembre de 2025, 10:00</p>
-            </header>
-            <div class="card__body">
-              <a class="card__title" href="#">Cardiología - Dr. Esteban González</a>
+              <div class="card__title">Cardiología - Dr. Esteban González</div>
             </div>
           </article>
         </div>
 
-        <button class="btn btn--primary" type="button">Enviar recordatorio</button>
+        <button class="btn btn--primary" type="button" id="btnRecordatorio">
+          Enviar recordatorio
+        </button>
       </section>
     </main>
   </div>
+
+  <!-- Scripts -->
+  <script src="js/app.js" defer></script>
+  <script src="js/auth.js" defer></script>
+  <script src="js/dashboard.js" defer></script>
 </body>
 </html>

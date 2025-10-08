@@ -1,32 +1,92 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Agendar — Especialidad</title>
-  <link rel="icon" href="assets/img/logo.svg" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Selecciona la especialidad médica para agendar tu turno en MiTurnoSalud.">
+  <title>Agendar turno — Especialidad | MiTurnoSalud</title>
+  <link rel="icon" href="assets/img/logo.svg">
   <link rel="stylesheet" href="styles.css">
-  <style>
-    body{font-family:Arial,Helvetica,sans-serif;background:#f6f8fa;margin:0;padding:1rem}
-    .card{max-width:720px;margin:auto;background:#fff;padding:1rem;border-radius:8px}
-    select,input,button{width:100%;padding:.7rem;margin-top:.5rem;border-radius:6px;border:1px solid #ddd}
-  </style>
 </head>
 <body>
-  <div class="card">
-    <header><h2>Seleccionar especialidad</h2></header>
-    <form action="agendar-medico.html" method="get">
-      <label>Especialidad</label>
-      <select name="especialidad" required>
-        <option value="">-- Elige una --</option>
-        <option>Cardiología</option>
-        <option>Pediatría</option>
-        <option>Dermatología</option>
-        <option>Traumatología</option>
-      </select>
+  <!-- Header -->
+  <header class="site-header" role="banner">
+    <div class="site-header__brand">
+      <a href="dashboard.html" class="brand__link">
+        <img src="assets/img/logo.svg" alt="" aria-hidden="true" class="brand__logo">
+        <span class="brand__name">MiTurnoSalud</span>
+      </a>
+    </div>
+  </header>
 
-      <button type="submit">Siguiente — Elegir médico</button>
-    </form>
+  <!-- Layout -->
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" aria-label="Navegación secundaria">
+      <nav role="navigation">
+        <ul role="list">
+          <li class="nav__item nav__item--active">
+            <a href="dashboard.html" aria-current="page">Turnos</a>
+            <ul class="nav__sublist">
+              <li><a href="dashboard.html">Historial Turnos</a></li>
+              <li><a href="agendar-especialidad.html">Agendar Turno</a></li>
+            </ul>
+          </li>
+          <li><a href="#">Perfil</a></li>
+          <li><a href="#">Notificaciones</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main content -->
+    <main class="content">
+      <h1>Agendar Turno</h1>
+
+      <!-- Stepper -->
+      <div class="stepper" aria-label="Progreso de agendamiento">
+        <ol class="stepper__list">
+          <li class="stepper__item stepper__item--current"><span>Paso 1 · Especialidad</span></li>
+          <li class="stepper__item"><span>Paso 2 · Médico</span></li>
+          <li class="stepper__item"><span>Paso 3 · Fecha y hora</span></li>
+          <li class="stepper__item"><span>Paso 4 · Institución</span></li>
+        </ol>
+      </div>
+
+      <!-- Panel principal -->
+      <section class="panel">
+        <h2>Seleccionar Especialidad</h2>
+        <p class="muted">Selecciona la especialidad médica para continuar con el proceso de agendamiento.</p>
+
+        <form class="form" action="agendar-medico.html" method="get" novalidate>
+          <div class="form__group">
+            <label for="especialidad">Especialidad</label>
+            <input
+              id="especialidad"
+              name="especialidad"
+              type="text"
+              list="especialidades"
+              placeholder="Ej: Cardiología, Dermatología..."
+              required
+              autocomplete="off">
+            <datalist id="especialidades">
+              <option value="Cardiología">
+              <option value="Pediatría">
+              <option value="Dermatología">
+              <option value="Traumatología">
+            </datalist>
+            <p class="form__help">Puedes escribir o elegir una opción del listado.</p>
+          </div>
+
+          <button type="submit" class="btn btn--primary">Siguiente — Elegir médico</button>
+        </form>
+      </section>
+    </main>
   </div>
+
+  <!-- Scripts -->
+  <script src="js/app.js" defer></script>
+  <script src="js/auth.js" defer></script>
+  <script src="js/agendar-especialidad.js" defer></script>
 </body>
 </html>

@@ -1,40 +1,103 @@
 <!doctype html>
 <html lang="es">
 <head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>Agendar — Médico</title>
-  <link rel="icon" href="assets/img/logo.svg" />
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Selecciona el médico disponible para tu turno en MiTurnoSalud.">
+  <title>Agendar turno — Médico | MiTurnoSalud</title>
+  <link rel="icon" href="assets/img/logo.svg">
   <link rel="stylesheet" href="styles.css">
-  <style>
-    body{font-family:Arial,Helvetica,sans-serif;background:#f6f8fa;padding:1rem}
-    .card{max-width:720px;margin:auto;background:#fff;padding:1rem;border-radius:8px}
-    ul{list-style:none;padding:0}
-    li{padding:.6rem;border-bottom:1px solid #eee;display:flex;justify-content:space-between;align-items:center}
-    button{padding:.5rem .7rem;border-radius:6px;background:#0366d6;color:#fff;border:none}
-  </style>
 </head>
 <body>
-  <div class="card">
-    <h2>Elegir médico</h2>
-    <p>Lista de médicos disponibles para la especialidad seleccionada.</p>
+  <!-- Header -->
+  <header class="site-header" role="banner">
+    <div class="site-header__brand">
+      <a href="dashboard.html" class="brand__link">
+        <img src="assets/img/logo.svg" alt="" aria-hidden="true" class="brand__logo">
+        <span class="brand__name">MiTurnoSalud</span>
+      </a>
+    </div>
+  </header>
 
-    <ul>
-      <li>
-        <div>
-          <strong>Dra. Ana Pérez</strong><br/>
-          <small>Cardiología — Clínica San José</small>
+  <!-- Layout -->
+  <div class="layout">
+    <!-- Sidebar -->
+    <aside class="sidebar" aria-label="Navegación secundaria">
+      <nav role="navigation">
+        <ul role="list">
+          <li class="nav__item nav__item--active">
+            <a href="dashboard.html" aria-current="page">Turnos</a>
+            <ul class="nav__sublist">
+              <li><a href="dashboard.html">Historial Turnos</a></li>
+              <li><a href="agendar-especialidad.html">Agendar Turno</a></li>
+            </ul>
+          </li>
+          <li><a href="#">Perfil</a></li>
+          <li><a href="#">Notificaciones</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Main -->
+    <main class="content">
+      <h1>Agendar Turno</h1>
+
+      <!-- Stepper -->
+      <div class="stepper" aria-label="Progreso de agendamiento">
+        <ol class="stepper__list">
+          <li class="stepper__item stepper__item--done"><span>Paso 1 · Especialidad</span></li>
+          <li class="stepper__item stepper__item--current"><span>Paso 2 · Médico</span></li>
+          <li class="stepper__item"><span>Paso 3 · Fecha y hora</span></li>
+          <li class="stepper__item"><span>Paso 4 · Institución</span></li>
+        </ol>
+      </div>
+
+      <!-- Panel -->
+      <section class="panel">
+        <h2>Seleccionar Médico</h2>
+        <p class="muted">Elige un médico disponible para la especialidad seleccionada.</p>
+
+        <ul class="list list--cards" role="list">
+          <li>
+            <article class="card">
+              <div class="card__body">
+                <h3 class="card__title">Dra. Ana Pérez</h3>
+                <p class="card__subtitle">Cardiología — Clínica San José</p>
+              </div>
+              <footer class="card__footer">
+                <button class="btn btn--primary js-select" data-medico="Dra. Ana Pérez">
+                  Seleccionar
+                </button>
+              </footer>
+            </article>
+          </li>
+
+          <li>
+            <article class="card">
+              <div class="card__body">
+                <h3 class="card__title">Dr. Juan Gómez</h3>
+                <p class="card__subtitle">Cardiología — Hospital Central</p>
+              </div>
+              <footer class="card__footer">
+                <button class="btn btn--primary js-select" data-medico="Dr. Juan Gómez">
+                  Seleccionar
+                </button>
+              </footer>
+            </article>
+          </li>
+        </ul>
+
+        <div class="actions">
+          <button class="btn btn--ghost" type="button" onclick="history.back()">Volver</button>
         </div>
-        <a href="agendar-fecha-hora.html"><button>Seleccionar</button></a>
-      </li>
-      <li>
-        <div>
-          <strong>Dr. Juan Gómez</strong><br/>
-          <small>Cardiología — Hospital Central</small>
-        </div>
-        <a href="agendar-fecha-hora.html"><button>Seleccionar</button></a>
-      </li>
-    </ul>
+      </section>
+    </main>
   </div>
+
+  <!-- Scripts -->
+  <script src="js/app.js" defer></script>
+  <script src="js/auth.js" defer></script>
+  <script src="js/agendar-medico.js" defer></script>
 </body>
 </html>
