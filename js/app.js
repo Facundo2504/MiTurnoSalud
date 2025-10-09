@@ -2,6 +2,7 @@
    - Seed con versionado y datos de instituciones reales
    - Helpers de Storage (JSON seguro), DOM, fechas (TZ AR), teléfonos/WhatsApp
    - API: MTS.Draft, MTS.Data, MTS.Appointments
+   - Extras: sortByDate, upcoming, clearFlowData
    - Retro-compatible con scripts existentes (login, registro, agendamiento, dashboard)
 */
 (function () {
@@ -19,7 +20,7 @@
     DATA_VERSION: 'mts:data:version',
     LAST_CONFIRM: 'mts:lastConfirm'
   };
-  const DATA_VERSION = 2; // ⟵ aumenta si cambias seed para forzar actualización
+  const DATA_VERSION = 2; // ⟵ aumenta cuando cambie el seed para forzar actualización
   const APP_TZ = 'America/Argentina/Cordoba';
 
   // Exponer KEYS temprano (útil para otras cargas muy al inicio)
@@ -90,7 +91,7 @@
 
   // "HH:mm" -> "HH:mm" validado
   function formatTimeHHMM(t = '') {
-    return /^([01]\d|2[0-3]):[0-5]\d$/.test(t) ? t : t.substring(0,5);
+    return /^([01]\d|2[0-3]):[0-5]\d$/.test(t) ? t : String(t).substring(0,5);
   }
 
   /* ================================
@@ -175,9 +176,8 @@
   // Fallback crypto.randomUUID para navegadores viejos
   function uid() {
     if (crypto?.randomUUID) return crypto.randomUUID();
-    // Fallback simple
     return 'id-' + Math.random().toString(36).slice(2) + Date.now().toString(36);
-    }
+  }
 
   const Draft = {
     get: () => readJSON(KEYS.DRAFT, {}),
@@ -211,7 +211,7 @@
       const record = {
         id: uid(),
         createdAt: Date.now(),
-        // Guardamos tanto ISO y time como display preformateado (por conveniencia de UI)
+        // Guardamos ISO, time y display preformateado (para UI)
         date: appt.date,                    // "YYYY-MM-DD"
         time: formatTimeHHMM(appt.time),    // "HH:mm"
         dateDisplay: formatDateAR(appt.date),
@@ -225,6 +225,21 @@
     removeById: (id) => {
       const next = Appointments.list().filter(a => a.id !== id);
       writeJSON(KEYS.APPOINTMENTS, next);
+    },
+    // ⟵ NUEVOS HELPERS
+    sortByDate(list) {
+      // ordena asc por fecha y hora (YYYY-MM-DD + HH:mm)
+      return [...list].sort((a, b) => {
+        if (a.date === b.date) return (a.time || '').localeCompare(b.time || '');
+        return (a.date || '').localeCompare(b.date || '');
+      });
+    },
+    upcoming(filter = {}) {
+      // devuelve turnos con fecha >= hoy ordenados
+      const all = Appointments.list(filter);
+      const today = todayISO();
+      const next = all.filter(a => (a.date || '') >= today);
+      return Appointments.sortByDate(next);
     }
   };
 
@@ -233,6 +248,14 @@
   ==================================*/
   function currentUser() {
     return readJSON(KEYS.SESSION, null);
+  }
+
+  /* ================================
+     Limpieza de datos temporales
+  ==================================*/
+  function clearFlowData() {
+    remove(KEYS.DRAFT);
+    remove(KEYS.LAST_CONFIRM);
   }
 
   /* ================================
@@ -251,7 +274,8 @@
     todayISO, formatDateAR, formatTimeHHMM,
     // APIs principales
     Draft, Data, Appointments,
-    // Sesión
-    currentUser
+    // Sesión y limpieza
+    currentUser,
+    clearFlowData
   };
 })();

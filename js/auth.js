@@ -18,8 +18,10 @@
   const cleanText = (t) => String(t || '').trim();
   const isEmailValid = (email) =>
     /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  // 1) --- Helpers ---
   const isPasswordValid = (pwd) =>
-    typeof pwd === 'string' && pwd.length >= 6;
+    typeof pwd === 'string' && pwd.length >= 8;
+
 
   /* ------------------------------
      Core auth methods
@@ -48,9 +50,11 @@
 
   function logout(redirect = true) {
     remove(SESSION);
+  // limpieza de datos temporales del flujo
+    remove('mts:appointment:draft');
+    remove('mts:lastConfirm');
     if (redirect) location.replace('index.html');
   }
-
   function register({ name, lastName, email, obraSocial, telefono, password }) {
     name = cleanText(name);
     lastName = cleanText(lastName);
