@@ -33,8 +33,8 @@
               <li><a href="agendar-especialidad.html">Agendar Turno</a></li>
             </ul>
           </li>
-          <li><a href="#">Perfil</a></li>
-          <li><a href="#">Notificaciones</a></li>
+          <li><a href="#" aria-disabled="true">Perfil</a></li>
+          <li><a href="#" aria-disabled="true">Notificaciones</a></li>
         </ul>
       </nav>
     </aside>
@@ -59,6 +59,7 @@
         <p class="muted">Elige el día y el horario que prefieras para tu turno médico.</p>
 
         <form class="form" action="agendar-institucion.html" method="get" novalidate>
+          <!-- Fecha -->
           <div class="form__group">
             <label for="fecha">Fecha</label>
             <input
@@ -67,12 +68,16 @@
               type="date"
               required
               min=""
+              autocomplete="off"
               aria-describedby="ayuda-fecha">
             <p id="ayuda-fecha" class="form__help">No se pueden seleccionar fechas anteriores a hoy.</p>
           </div>
 
-          <fieldset class="form__group">
+          <!-- Horarios -->
+          <fieldset class="form__group" aria-describedby="ayuda-hora">
             <legend>Selecciona un horario disponible</legend>
+            <p id="ayuda-hora" class="form__help sr-only">Elige una de las opciones de horario.</p>
+
             <div class="times">
               <label class="time"><input type="radio" name="hora" value="09:00" required> 09:00</label>
               <label class="time"><input type="radio" name="hora" value="10:30"> 10:30</label>
@@ -82,6 +87,10 @@
             </div>
           </fieldset>
 
+          <!-- Feedback accesible para JS -->
+          <p class="form__feedback" aria-live="polite"></p>
+
+          <!-- Acciones -->
           <div class="actions">
             <button type="button" class="btn btn--ghost" onclick="history.back()">Volver</button>
             <button type="submit" class="btn btn--primary">Continuar — Elegir institución</button>
