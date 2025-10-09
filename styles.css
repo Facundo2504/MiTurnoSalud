@@ -491,6 +491,24 @@ details[open] > summary{ color: var(--brand-700); }
 .form__feedback{ margin-top: .9rem; font-weight:600; }
 .form__feedback.error{ color: var(--danger-500); }
 .form__feedback.success{ color: var(--success-500); }
+/* Ajuste visual del toggle de contraseña */
+.form__group label[for="togglePassword"],
+.form__group label:has(#togglePassword) {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem; /* reduce el espacio entre el checkbox y el texto */
+  font-weight: 600;
+  color: var(--gray-700);
+  cursor: pointer;
+}
+
+#togglePassword {
+  width: 16px;
+  height: 16px;
+  accent-color: var(--brand-500);
+  cursor: pointer;
+  transform: translateY(1px); /* centra visualmente con el texto */
+}
 
 /* =========================================================
    Fin de styles.css

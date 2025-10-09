@@ -4,7 +4,9 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Inicia sesión en MiTurnoSalud para gestionar tus turnos médicos fácilmente.">
   <title>Iniciar sesión - MiTurnoSalud</title>
+  <link rel="icon" href="assets/img/logo.svg">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -46,6 +48,14 @@
           minlength="8"
           autocomplete="current-password"
           placeholder="********">
+        <!-- Los mensajes de error por campo se insertan aquí dinámicamente si es necesario -->
+      </div>
+
+      <!-- Toggle mostrar contraseña -->
+      <div class="form__group">
+        <label style="display:flex; align-items:center; gap:.5rem;">
+          <input id="togglePassword" type="checkbox"> Mostrar contraseña
+        </label>
       </div>
 
       <button type="submit" class="btn btn--primary">Iniciar sesión</button>
@@ -54,7 +64,9 @@
         <a href="recuperar.html">¿Olvidaste tu contraseña?</a>
       </p>
 
-      <p>¿No tienes cuenta? <a href="registro.html">Regístrate</a></p>
+      <p class="form__help">
+        ¿No tienes cuenta? <a href="registro.html">Regístrate</a>
+      </p>
     </form>
   </main>
 
