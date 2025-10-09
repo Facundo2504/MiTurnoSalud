@@ -18,6 +18,7 @@
         <span class="brand__name">MiTurnoSalud</span>
       </a>
     </div>
+    <button class="btn btn--ghost" style="margin-right: 1rem;" onclick="Auth.logout()">Cerrar sesión</button>
   </header>
 
   <div class="layout">
@@ -28,7 +29,7 @@
           <li class="nav__item nav__item--active">
             <button class="nav__link" aria-current="page" aria-expanded="true">Turnos</button>
             <ul role="list" class="nav__sublist">
-              <li><a href="dashboard.html">Historial Turnos</a></li>
+              <li><a href="dashboard.html" aria-current="page">Historial Turnos</a></li>
               <li><a href="agendar-especialidad.html">Agendar Turno</a></li>
             </ul>
           </li>
@@ -45,21 +46,17 @@
       <section aria-labelledby="proximos-turnos">
         <h2 id="proximos-turnos">Próximos turnos</h2>
 
+        <!-- Contenedor dinámico -->
         <div class="cards" aria-live="polite">
-          <article class="card card--turno">
-            <header class="card__header">
-              <div aria-hidden="true">📅</div>
-              <p class="card__subtitle">10 de Noviembre de 2025, 10:00</p>
-            </header>
-            <div class="card__body">
-              <div class="card__title">Cardiología - Dr. Esteban González</div>
-            </div>
-          </article>
+          <!-- El script dashboard.js insertará los turnos aquí -->
         </div>
 
-        <button class="btn btn--primary" type="button" id="btnRecordatorio">
-          Enviar recordatorio
-        </button>
+        <!-- Botón de recordatorio -->
+        <div class="actions">
+          <button class="btn btn--primary" type="button" id="btnRecordatorio">
+            Enviar recordatorio
+          </button>
+        </div>
       </section>
     </main>
   </div>

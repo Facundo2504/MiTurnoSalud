@@ -475,6 +475,14 @@ details[open] > summary{ color: var(--brand-700); }
 
   .btn--ghost{ --_fg: var(--brand-200); border-color: var(--brand-300); }
 }
+/* Feedback para formularios */
+.form__feedback {
+  margin-top: .75rem;
+  font-size: .95rem;
+}
+.form__feedback.error { color: var(--brand-700); }
+.form__feedback.success { color: var(--brand-600); }
+
 /* =========================================================
    Fin de styles.css
    ========================================================= */
