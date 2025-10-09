@@ -1,16 +1,16 @@
 /* registro.js – Alta de usuario en MiTurnoSalud
    - Valida: nombre, apellido, email, teléfono (opcional), contraseña (mín. 8)
-   - Muestra errores por campo y feedback general accesible
-   - Registra con Auth.register(...) y redirige a dashboard
+   - Feedback accesible y bloqueo de botón al procesar
+   - Usa Auth.register(...) y redirige al dashboard
 */
 document.addEventListener('DOMContentLoaded', () => {
-  // Si ya hay sesión, envía al dashboard
+  // Si ya hay sesión activa, redirige al dashboard
   Auth.redirectIfAuth();
 
   const form = document.querySelector('form.form');
   if (!form) return;
 
-  // refs
+  // Referencias
   const $ = (sel, root = document) => root.querySelector(sel);
   const nombre     = $('#nombre', form);
   const apellido   = $('#apellido', form);
@@ -18,14 +18,18 @@ document.addEventListener('DOMContentLoaded', () => {
   const obraSocial = $('#obraSocial', form);
   const telefono   = $('#telefono', form);
   const password   = $('#password', form);
+  const btnSubmit  = form.querySelector('button[type="submit"]');
 
-  // feedback general accesible
-  const feedback = document.createElement('p');
-  feedback.className = 'form__feedback';
-  feedback.setAttribute('aria-live', 'polite');
-  form.appendChild(feedback);
+  // Feedback general accesible
+  let feedback = form.querySelector('.form__feedback');
+  if (!feedback) {
+    feedback = document.createElement('p');
+    feedback.className = 'form__feedback';
+    feedback.setAttribute('aria-live', 'polite');
+    form.appendChild(feedback);
+  }
 
-  // limpiar errores al escribir
+  // Limpiar errores visuales al escribir
   [nombre, apellido, email, obraSocial, telefono, password].forEach(inp => {
     inp?.addEventListener('input', () => clearFieldError(inp));
   });
@@ -46,16 +50,19 @@ document.addEventListener('DOMContentLoaded', () => {
     const ok = validateAll(data);
     if (!ok) return;
 
+    lock(true);
     try {
       Auth.register(data); // guarda y abre sesión
       showFormFeedback('✅ Registro exitoso. Redirigiendo…', 'success');
       setTimeout(() => location.assign('dashboard.html'), 800);
     } catch (err) {
       showFormFeedback(err.message || '❌ No se pudo completar el registro.', 'error');
+    } finally {
+      lock(false);
     }
   });
 
-  // ---------------------- Validaciones ----------------------
+  /* ---------------------- Validaciones ---------------------- */
   function validateAll({ name, lastName, email, telefono, password }) {
     let valid = true;
 
@@ -90,7 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
     return valid;
   }
 
-  // ---------------------- UI helpers ----------------------
+  /* ---------------------- UI Helpers ---------------------- */
   function setFieldError(input, message) {
     if (!input) return;
     input.setAttribute('aria-invalid', 'true');
@@ -127,5 +134,11 @@ document.addEventListener('DOMContentLoaded', () => {
   function clearFormFeedback() {
     feedback.textContent = '';
     feedback.classList.remove('error', 'success');
+  }
+
+  function lock(state) {
+    if (!btnSubmit) return;
+    btnSubmit.disabled = state;
+    btnSubmit.textContent = state ? 'Registrando…' : 'Registrarse';
   }
 });
