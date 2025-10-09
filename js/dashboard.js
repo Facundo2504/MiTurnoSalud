@@ -1,40 +1,75 @@
 /* dashboard.js – Panel principal de MiTurnoSalud
    Funcionalidades:
-   - Listar turnos del usuario actual
+   - Listar turnos del usuario actual en orden cronológico
    - Cancelar turno con confirmación
    - Simular recordatorio
-   - Actualización dinámica del listado
+   - Actualización dinámica accesible
 */
 document.addEventListener('DOMContentLoaded', () => {
-  Auth.requireAuth();
+  try {
+    Auth.requireAuth();
+  } catch {
+    location.replace('index.html');
+    return;
+  }
 
   const user = Auth.currentUser();
   const listContainer = document.querySelector('.cards');
   const btnRecordatorio = document.querySelector('#btnRecordatorio');
   const liveRegion = document.createElement('div');
-  liveRegion.setAttribute('aria-live', 'polite');
   liveRegion.className = 'sr-only';
+  liveRegion.setAttribute('aria-live', 'polite');
   document.body.appendChild(liveRegion);
 
-  // Helpers del núcleo (app.js)
+  if (!listContainer || !user) return;
+
   const { formatDateAR, formatTimeHHMM } = MTS;
 
-  // Render inicial
+  /* ---------- Render inicial ---------- */
   renderAppointments();
 
-  // ---- Recordatorio (simulado)
+  /* ---------- Recordatorio (simulado) ---------- */
   btnRecordatorio?.addEventListener('click', () => {
-    const appts = MTS.Appointments.list({ userEmail: user.email });
-    if (!appts.length) return alert('No tienes turnos próximos.');
-    alert(`📅 Recordatorio enviado para ${appts.length} turno(s).`);
-    liveRegion.textContent = `Recordatorio enviado para ${appts.length} turno${appts.length > 1 ? 's' : ''}.`;
+    const appts = MTS.Appointments.upcoming({ userEmail: user.email });
+    if (!appts.length) {
+      alert('No tienes turnos próximos.');
+      return;
+    }
+
+    const msg = `📅 Se envió recordatorio para ${appts.length} turno${appts.length > 1 ? 's' : ''}.`;
+    alert(msg);
+    liveRegion.textContent = msg;
   });
 
-  // ---- Render de turnos
-  function renderAppointments() {
-    const appts = MTS.Appointments.list({ userEmail: user.email });
+  /* ---------- Delegación: Cancelar turno ---------- */
+  document.addEventListener('click', (e) => {
+    const btn = e.target.closest('.js-cancel');
+    if (!btn) return;
 
-    if (!listContainer) return;
+    const card = btn.closest('.card');
+    const id = card?.dataset.id;
+    if (!id) return;
+
+    const appt = MTS.Appointments.list().find(a => a.id === id);
+    if (!appt) return;
+
+    const confirmMsg = `¿Seguro que deseas cancelar el turno de ${appt.specialty} con ${appt.doctor} (${formatDateAR(appt.date)} ${appt.time})?`;
+    if (!confirm(confirmMsg)) return;
+
+    // Animación antes de eliminar
+    card.style.opacity = '0.6';
+    card.style.transform = 'scale(0.98)';
+    setTimeout(() => {
+      MTS.Appointments.removeById(id);
+      liveRegion.textContent = 'Turno cancelado correctamente.';
+      renderAppointments();
+    }, 250);
+  });
+
+  /* ---------- Render de turnos ---------- */
+  function renderAppointments() {
+    const appts = MTS.Appointments.upcoming({ userEmail: user.email });
+
     if (!appts.length) {
       listContainer.innerHTML = `
         <div class="empty">
@@ -62,27 +97,7 @@ document.addEventListener('DOMContentLoaded', () => {
       </article>
     `).join('');
 
-    attachCancelHandlers();
-  }
-
-  // ---- Cancelación de turno
-  function attachCancelHandlers() {
-    listContainer.querySelectorAll('.js-cancel').forEach(btn => {
-      btn.addEventListener('click', (e) => {
-        const card = e.target.closest('.card');
-        const id = card?.dataset.id;
-        if (!id) return;
-        const appt = MTS.Appointments.list().find(a => a.id === id);
-        if (!appt) return;
-
-        const confirmMsg = `¿Seguro que deseas cancelar el turno de ${appt.specialty} con ${appt.doctor} (${formatDateAR(appt.date)} ${appt.time})?`;
-        if (!confirm(confirmMsg)) return;
-
-        MTS.Appointments.removeById(id);
-        alert('Turno cancelado con éxito.');
-        liveRegion.textContent = 'Turno cancelado correctamente.';
-        renderAppointments();
-      });
-    });
+    // A11y: anunciar la actualización de lista
+    liveRegion.textContent = `Lista actualizada: ${appts.length} turno${appts.length > 1 ? 's' : ''} en total.`;
   }
 });
