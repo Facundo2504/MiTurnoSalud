@@ -1,59 +1,56 @@
-/* confirmar-turno.js – Resumen y acciones del turno confirmado
-   - Usa utilidades de app.js: MTS.formatDateAR, MTS.formatTimeHHMM, MTS.telHref, MTS.waHref
-   - Muestra datos del turno + institución
-   - Accesos rápidos: Llamar / WhatsApp
-   - Extra: botón "Agregar a Google Calendar"
+/* confirmar-turno.js – Resumen final del turno confirmado
+   - Muestra los datos completos del turno + institución
+   - Enlaces a teléfono, WhatsApp y Google Calendar
+   - Limpia el snapshot al regresar al inicio
+   - Accesibilidad y seguridad mejoradas
 */
 document.addEventListener('DOMContentLoaded', () => {
-  Auth.requireAuth();
+  try {
+    Auth.requireAuth();
+  } catch {
+    location.replace('index.html');
+    return;
+  }
 
   // --- Cargar snapshot del turno confirmado
   const snap = (() => {
-    try { return JSON.parse(localStorage.getItem('mts:lastConfirm')) || null; }
-    catch { return null; }
+    try {
+      return JSON.parse(localStorage.getItem('mts:lastConfirm')) || null;
+    } catch {
+      return null;
+    }
   })();
 
   if (!snap) {
-    // Si no hay snapshot, volvemos al dashboard
-    return location.replace('dashboard.html');
+    location.replace('dashboard.html');
+    return;
   }
 
   // --- Helpers locales
   const { formatDateAR, formatTimeHHMM, telHref, waHref } = window.MTS;
 
-  function safeText(v, fallback = '—') {
-    return (v == null || String(v).trim() === '') ? fallback : String(v);
-  }
+  const safeText = (v, fallback = '—') =>
+    (v == null || String(v).trim() === '') ? fallback : String(v);
 
-  // Construye link de Google Calendar (evento 1h)
+  // Genera un link de Google Calendar (evento 1 hora)
   function buildGoogleCalendarLink({ title, dateISO, timeHHMM, location, details }) {
     try {
-      // Fecha/hora local -> objeto Date
       const [y, m, d] = dateISO.split('-').map(Number);
       const [H, M] = timeHHMM.split(':').map(Number);
-      const start = new Date(y, m - 1, d, H, M || 0, 0);
-      const end = new Date(start.getTime() + 60 * 60 * 1000); // +1h
+      const start = new Date(y, m - 1, d, H, M || 0);
+      const end = new Date(start.getTime() + 60 * 60 * 1000);
 
-      const toGoogleTS = (dt) => {
-        const YYYY = dt.getUTCFullYear();
-        const MM   = String(dt.getUTCMonth() + 1).padStart(2, '0');
-        const DD   = String(dt.getUTCDate()).padStart(2, '0');
-        const hh   = String(dt.getUTCHours()).padStart(2, '0');
-        const mm   = String(dt.getUTCMinutes()).padStart(2, '0');
-        const ss   = String(dt.getUTCSeconds()).padStart(2, '0');
-        return `${YYYY}${MM}${DD}T${hh}${mm}${ss}Z`;
-      };
-
-      const s = toGoogleTS(start);
-      const e = toGoogleTS(end);
+      const toUTC = (dt) =>
+        `${dt.getUTCFullYear()}${String(dt.getUTCMonth() + 1).padStart(2, '0')}${String(dt.getUTCDate()).padStart(2, '0')}T${String(dt.getUTCHours()).padStart(2, '0')}${String(dt.getUTCMinutes()).padStart(2, '0')}00Z`;
 
       const params = new URLSearchParams({
         action: 'TEMPLATE',
         text: title || 'Turno médico',
-        dates: `${s}/${e}`,
+        dates: `${toUTC(start)}/${toUTC(end)}`,
         location: location || '',
         details: details || ''
       });
+
       return `https://calendar.google.com/calendar/render?${params.toString()}`;
     } catch {
       return '#';
@@ -63,13 +60,14 @@ document.addEventListener('DOMContentLoaded', () => {
   // --- Preparar datos
   const dateDisplay = formatDateAR(snap.date);
   const timeDisplay = formatTimeHHMM(snap.time);
-  const inst        = snap.institution || {};
-  const phoneHref   = telHref(inst.phone);
-  const waLink      = waHref(inst.whatsapp);
-  const hasPhone    = !!inst.phone;
+  const inst = snap.institution || {};
+  const phoneHref = telHref(inst.phone);
+  const waLink = waHref(inst.whatsapp);
+
+  const hasPhone = !!inst.phone;
   const hasWhatsApp = !!inst.whatsapp;
 
-  // --- Render principal <dl.definition>
+  // --- Render del resumen <dl.definition>
   const dl = document.querySelector('.definition');
   if (dl) {
     dl.innerHTML = `
@@ -82,35 +80,34 @@ document.addEventListener('DOMContentLoaded', () => {
       <div class="definition__row">
         <dt>Contacto</dt>
         <dd>
-          ${hasPhone    ? `<a href="${phoneHref}">${inst.phone}</a>` : '—'}
-          ${hasWhatsApp ? ` · <a target="_blank" rel="noopener" href="${waLink}">WhatsApp ${inst.whatsapp.replace('+54 ','')}</a>` : ''}
+          ${hasPhone ? `<a href="${phoneHref}" class="link">${inst.phone}</a>` : '—'}
+          ${hasWhatsApp ? ` · <a href="${waLink}" target="_blank" rel="noopener" class="link">WhatsApp ${inst.whatsapp.replace('+54 ', '')}</a>` : ''}
         </dd>
       </div>
     `;
 
-    // Si la institución tiene listado de servicios, los mostramos en un bloque adicional
+    // Bloque de servicios
     if (Array.isArray(inst.services) && inst.services.length) {
-      const servicesBlock = document.createElement('div');
-      servicesBlock.className = 'definition__row';
-      servicesBlock.innerHTML = `
+      const services = document.createElement('div');
+      services.className = 'definition__row';
+      services.innerHTML = `
         <dt>Servicios</dt>
         <dd>
           <details open>
             <summary class="muted">Ver detalles</summary>
-            <ul class="list" style="margin-top:.5rem;">
+            <ul class="list mt-1">
               ${inst.services.map(s => `<li>${s}</li>`).join('')}
             </ul>
           </details>
         </dd>
       `;
-      dl.appendChild(servicesBlock);
+      dl.appendChild(services);
     }
   }
 
-  // --- Acciones: agregar botones Tel/WhatsApp/Calendar y limpiar snapshot al salir
+  // --- Acciones: Tel / WhatsApp / Google Calendar
   const actions = document.querySelector('.actions');
   if (actions) {
-    // Insertar accesos (antes del "Volver al inicio")
     const frag = document.createDocumentFragment();
 
     if (hasPhone) {
@@ -127,18 +124,17 @@ document.addEventListener('DOMContentLoaded', () => {
       waBtn.href = waLink;
       waBtn.target = '_blank';
       waBtn.rel = 'noopener';
-      waBtn.textContent = `WhatsApp ${inst.whatsapp.replace('+54 ','')}`;
+      waBtn.textContent = `WhatsApp ${inst.whatsapp.replace('+54 ', '')}`;
       frag.appendChild(waBtn);
     }
 
-    // Botón para agregar al Google Calendar
     const gcal = document.createElement('a');
     gcal.className = 'btn btn--ghost';
     gcal.href = buildGoogleCalendarLink({
       title: `${snap.specialty} — ${snap.doctor}`,
       dateISO: snap.date,
-      timeHHMM: timeDisplay,
-      location: `${safeText(inst.name)} ${inst.address ? '— ' + inst.address : ''}`,
+      timeHHMM: snap.time,
+      location: `${inst.name} ${inst.address ? '— ' + inst.address : ''}`,
       details: `Turno confirmado en MiTurnoSalud.\nEspecialidad: ${snap.specialty}\nMédico: ${snap.doctor}`
     });
     gcal.target = '_blank';
@@ -148,8 +144,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
     actions.prepend(frag);
 
-    // Al volver al inicio, limpiamos el snapshot
-    const backLink = actions.querySelector('a.btn.btn--primary[href="dashboard.html"]');
+    // Limpiar snapshot al volver al dashboard
+    const backLink = actions.querySelector('a[href="dashboard.html"]');
     backLink?.addEventListener('click', () => {
       localStorage.removeItem('mts:lastConfirm');
     });
