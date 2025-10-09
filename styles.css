@@ -483,6 +483,15 @@ details[open] > summary{ color: var(--brand-700); }
 .form__feedback.error { color: var(--brand-700); }
 .form__feedback.success { color: var(--brand-600); }
 
+/* Estados de error en campos */
+.is-invalid{ border-color: var(--danger-500) !important; box-shadow: 0 0 0 3px color-mix(in oklab, var(--danger-500) 20%, white); }
+.field-error{ margin-top:.35rem; font-size:.9rem; color: var(--danger-500); }
+
+/* Feedback general del formulario */
+.form__feedback{ margin-top: .9rem; font-weight:600; }
+.form__feedback.error{ color: var(--danger-500); }
+.form__feedback.success{ color: var(--success-500); }
+
 /* =========================================================
    Fin de styles.css
    ========================================================= */
