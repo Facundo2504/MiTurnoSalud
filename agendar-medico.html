@@ -33,8 +33,8 @@
               <li><a href="agendar-especialidad.html">Agendar Turno</a></li>
             </ul>
           </li>
-          <li><a href="#">Perfil</a></li>
-          <li><a href="#">Notificaciones</a></li>
+          <li><a href="#" aria-disabled="true">Perfil</a></li>
+          <li><a href="#" aria-disabled="true">Notificaciones</a></li>
         </ul>
       </nav>
     </aside>
@@ -56,41 +56,24 @@
       <!-- Panel -->
       <section class="panel">
         <h2>Seleccionar Médico</h2>
-        <p class="muted">Elige un médico disponible para la especialidad seleccionada.</p>
+        <p class="muted" id="ayuda-medico">
+          Elegí un médico disponible para la especialidad seleccionada.
+        </p>
 
-        <ul class="list list--cards" role="list">
-          <li>
-            <article class="card">
-              <div class="card__body">
-                <h3 class="card__title">Dra. Ana Pérez</h3>
-                <p class="card__subtitle">Cardiología — Clínica San José</p>
-              </div>
-              <footer class="card__footer">
-                <button class="btn btn--primary js-select" data-medico="Dra. Ana Pérez">
-                  Seleccionar
-                </button>
-              </footer>
-            </article>
-          </li>
+        <form class="form" action="agendar-fecha-hora.html" method="get" novalidate>
+          <div class="form__group">
+            <label for="medico">Médico</label>
+            <select id="medico" name="medico" required aria-describedby="ayuda-medico">
+              <!-- agendar-medico.js insertará las opciones según la especialidad -->
+              <option value="" selected disabled>Seleccione…</option>
+            </select>
+          </div>
 
-          <li>
-            <article class="card">
-              <div class="card__body">
-                <h3 class="card__title">Dr. Juan Gómez</h3>
-                <p class="card__subtitle">Cardiología — Hospital Central</p>
-              </div>
-              <footer class="card__footer">
-                <button class="btn btn--primary js-select" data-medico="Dr. Juan Gómez">
-                  Seleccionar
-                </button>
-              </footer>
-            </article>
-          </li>
-        </ul>
-
-        <div class="actions">
-          <button class="btn btn--ghost" type="button" onclick="history.back()">Volver</button>
-        </div>
+          <div class="actions">
+            <button class="btn btn--ghost" type="button" onclick="history.back()">Volver</button>
+            <button class="btn btn--primary" type="submit">Confirmar</button>
+          </div>
+        </form>
       </section>
     </main>
   </div>

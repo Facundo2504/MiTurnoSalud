@@ -475,40 +475,68 @@ details[open] > summary{ color: var(--brand-700); }
 
   .btn--ghost{ --_fg: var(--brand-200); border-color: var(--brand-300); }
 }
-/* Feedback para formularios */
-.form__feedback {
-  margin-top: .75rem;
+
+
+/* ====================== */
+/* Consolidado feedback   */
+/* (reemplaza cualquier otro bloque previo de .form__feedback / .field-error) */
+.form__feedback{
+  margin-top: .9rem;
+  font-weight: 600;
   font-size: .95rem;
 }
-.form__feedback.error { color: var(--brand-700); }
-.form__feedback.success { color: var(--brand-600); }
-
-/* Estados de error en campos */
-.is-invalid{ border-color: var(--danger-500) !important; box-shadow: 0 0 0 3px color-mix(in oklab, var(--danger-500) 20%, white); }
-.field-error{ margin-top:.35rem; font-size:.9rem; color: var(--danger-500); }
-
-/* Feedback general del formulario */
-.form__feedback{ margin-top: .9rem; font-weight:600; }
 .form__feedback.error{ color: var(--danger-500); }
 .form__feedback.success{ color: var(--success-500); }
-/* Ajuste visual del toggle de contraseña */
-.form__group label[for="togglePassword"],
-.form__group label:has(#togglePassword) {
-  display: inline-flex;
-  align-items: center;
-  gap: .35rem; /* reduce el espacio entre el checkbox y el texto */
-  font-weight: 600;
-  color: var(--gray-700);
-  cursor: pointer;
+
+.is-invalid{
+  border-color: var(--danger-500) !important;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--danger-500) 20%, white);
+}
+.field-error{
+  margin-top:.35rem;
+  font-size:.9rem;
+  color: var(--danger-500);
 }
 
-#togglePassword {
-  width: 16px;
-  height: 16px;
-  accent-color: var(--brand-500);
-  cursor: pointer;
-  transform: translateY(1px); /* centra visualmente con el texto */
+/* ====================== */
+/* Utilidad A11y          */
+.sr-only{
+  position:absolute !important;
+  width:1px !important;
+  height:1px !important;
+  padding:0 !important;
+  margin:-1px !important;
+  overflow:hidden !important;
+  clip:rect(0,0,0,0) !important;
+  white-space:nowrap !important;
+  border:0 !important;
 }
+
+/* ====================== */
+/* Paso 3: horario elegido */
+.time--selected{
+  border-color: var(--brand-500) !important;
+  box-shadow: 0 0 0 3px color-mix(in oklab, var(--brand-500) 20%, white);
+}
+
+/* ====================== */
+/* Toggle contraseña – fallback sin :has() */
+@supports not (selector(:has(*))) {
+  /* Usa una clase opcional en el label si querés compatibilidad extra:
+     <label class="toggle-password-label"> <input id="togglePassword" ...> Mostrar contraseña </label>
+   */
+  .toggle-password-label{
+    display:inline-flex;
+    align-items:center;
+    gap:.35rem;
+    font-weight:600;
+    color:var(--gray-700);
+    cursor:pointer;
+  }
+}
+
+
+
 
 /* =========================================================
    Fin de styles.css
