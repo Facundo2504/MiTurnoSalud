@@ -18,7 +18,10 @@
         <span class="brand__name">MiTurnoSalud</span>
       </a>
     </div>
-    <button class="btn btn--ghost" style="margin-right: 1rem;" onclick="Auth.logout()">Cerrar sesión</button>
+    <nav>
+      <a href="perfil.html" class="btn btn--ghost" style="margin-right: 1rem;">Perfil</a>
+      <button class="btn btn--ghost" style="margin-right: 1rem;" onclick="Auth.logout()">Cerrar sesión</button>
+    </nav>
   </header>
 
   <div class="layout">
@@ -33,8 +36,9 @@
               <li><a href="agendar-especialidad.html">Agendar Turno</a></li>
             </ul>
           </li>
-          <li><a href="#" aria-disabled="true">Perfil</a></li>
-          <li><a href="#" aria-disabled="true">Notificaciones</a></li>
+          <!-- Aquí cambiamos los enlaces -->
+          <li><a href="perfil.html">Perfil</a></li>
+          <li><a href="notificaciones.html">Notificaciones</a></li>
         </ul>
       </nav>
     </aside>
