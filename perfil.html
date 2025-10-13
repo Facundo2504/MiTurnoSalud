@@ -228,7 +228,15 @@
       session() { return JSON.parse(localStorage.getItem(LS_SESSION) || "null"); },
       ensureSessionOrRedirect() {
         const s = api.session();
-        if (!s) { alert("Inicia sesión para continuar."); location.href = "index.html"; }
+        // Si no hay sesión, redirige silenciosamente al login y pasa "next"
+if (!s) {
+  const loginUrl = new URL("index.html", location.origin);
+  loginUrl.searchParams.set("next", location.pathname + location.search);
+  // usa replace para no dejar historial inválido
+  location.replace(loginUrl.toString());
+  return;
+}
+
         return s;
       },
       profile() {
