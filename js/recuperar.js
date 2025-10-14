@@ -1,99 +1,107 @@
-/* recuperar.js – Recuperación de contraseña en MiTurnoSalud
-   - Usa Auth.recoverPassword(email) para simular envío de correo.
-   - Incluye validación, feedback accesible y bloqueo temporal del botón.
-*/
-document.addEventListener('DOMContentLoaded', () => {
-  // Si el usuario ya está autenticado, redirige al dashboard
-  Auth.redirectIfAuth();
+// js/recuperar.js — MiTurnoSalud (mock sin backend)
+// - Valida email
+// - Evita enumeración (mensaje de éxito siempre igual)
+// - Si el usuario existe en mts.users, genera un token y lo guarda en mts.resetRequests
+// - Redirige luego al login
 
-  const form = document.querySelector('form.form');
-  if (!form) return;
+const LS_USERS = "mts.users";
+const LS_RESETS = "mts.resetRequests";
 
-  const emailInput = form.querySelector('#email');
-  const btnSubmit  = form.querySelector('button[type="submit"]');
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("formRecuperar");
+  const email = document.getElementById("email");
+  const feedback = form.querySelector(".form__feedback");
+  const btn = form.querySelector('button[type="submit"]');
 
-  // Feedback general accesible
-  let feedback = form.querySelector('.form__feedback');
-  if (!feedback) {
-    feedback = document.createElement('p');
-    feedback.className = 'form__feedback';
-    feedback.setAttribute('aria-live', 'polite');
-    form.appendChild(feedback);
-  }
+  // Limpia feedback al tipear
+  email.addEventListener("input", () => {
+    clearError(email);
+    feedback.textContent = "";
+  });
 
-  // Limpiar errores al escribir
-  emailInput?.addEventListener('input', () => clearFieldError(emailInput));
-
-  form.addEventListener('submit', (e) => {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
-    clearFormFeedback();
+    feedback.textContent = "";
 
-    const email = (emailInput.value || '').trim().toLowerCase();
-    if (!email) {
-      setFieldError(emailInput, 'Ingresa tu correo electrónico.');
-      showFormFeedback('⚠️ El correo electrónico es obligatorio.', 'error');
-      return;
-    }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setFieldError(emailInput, 'Ingresa un formato de correo válido.');
-      showFormFeedback('⚠️ Corrige el correo ingresado.', 'error');
+    const value = (email.value || "").trim().toLowerCase();
+
+    // Validación simple de email
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value)) {
+      setError(email, "Introduce un correo válido (ej: nombre@dominio.com).");
+      feedback.textContent = "⚠️ Revisa el campo marcado.";
       return;
     }
 
+    // Lock UI
     lock(true);
+
     try {
-      Auth.recoverPassword(email);
-      showFormFeedback(`✅ Se envió un enlace de recuperación a ${email} (simulado).`, 'success');
-      emailInput.value = '';
-      emailInput.disabled = true;
-      setTimeout(() => location.assign('index.html'), 2500);
+      // Carga usuarios y resets
+      const users = JSON.parse(localStorage.getItem(LS_USERS) || "[]");
+      const exists = users.some(u => u.email === value);
+
+      // Siempre respondemos "OK" para evitar enumeración
+      if (exists) {
+        // Genera y guarda solicitud de reseteo (mock)
+        const token = crypto.randomUUID();
+        const expiresAt = new Date(Date.now() + 60 * 60 * 1000).toISOString(); // 1h
+
+        const resets = JSON.parse(localStorage.getItem(LS_RESETS) || "[]");
+        resets.push({
+          email: value,
+          token,
+          createdAt: new Date().toISOString(),
+          expiresAt,
+          used: false
+        });
+        localStorage.setItem(LS_RESETS, JSON.stringify(resets));
+
+        // (Opcional para desarrollo) — ver el token por consola
+        console.info("[recuperar.js] Reset token (mock):", token);
+        // Si luego querés implementar reset.html, podrías usar:
+        // console.info(`Sugerido: reset.html?token=${encodeURIComponent(token)}`);
+      }
+
+      feedback.textContent = "✅ Si tu correo está registrado, te enviaremos instrucciones para restablecer la contraseña.";
+      // Redireccionar al login después de un respiro
+      setTimeout(() => {
+        // Si tu login respeta ?next=, podrías volver a donde estabas:
+        // const next = new URLSearchParams(location.search).get("next") || "index.html";
+        location.href = "index.html";
+      }, 1200);
     } catch (err) {
-      showFormFeedback(err.message || '❌ No se pudo procesar la solicitud.', 'error');
+      console.error(err);
+      feedback.textContent = "❌ Ocurrió un error. Intenta nuevamente.";
     } finally {
       lock(false);
     }
   });
 
-  /* -------------------- Helpers UI -------------------- */
-  function setFieldError(input, message) {
-    if (!input) return;
-    input.setAttribute('aria-invalid', 'true');
-    input.classList.add('is-invalid');
-
-    let hint = input.nextElementSibling?.classList?.contains('field-error')
-      ? input.nextElementSibling
-      : null;
-
-    if (!hint) {
-      hint = document.createElement('div');
-      hint.className = 'field-error';
-      input.insertAdjacentElement('afterend', hint);
+  /* ---------- Helpers ---------- */
+  function setError(input, message) {
+    input.classList.add("is-invalid");
+    input.setAttribute("aria-invalid", "true");
+    let hint = input.nextElementSibling;
+    if (!hint || !hint.classList || !hint.classList.contains("field-error")) {
+      hint = document.createElement("div");
+      hint.className = "field-error";
+      input.insertAdjacentElement("afterend", hint);
     }
     hint.textContent = message;
+    input.focus();
   }
 
-  function clearFieldError(input) {
-    if (!input) return;
-    input.removeAttribute('aria-invalid');
-    input.classList.remove('is-invalid');
+  function clearError(input) {
+    input.classList.remove("is-invalid");
+    input.removeAttribute("aria-invalid");
     const hint = input.nextElementSibling;
-    if (hint && hint.classList.contains('field-error')) hint.remove();
-  }
-
-  function showFormFeedback(msg, type = 'info') {
-    feedback.textContent = msg;
-    feedback.classList.remove('error', 'success');
-    feedback.classList.add(type);
-  }
-
-  function clearFormFeedback() {
-    feedback.textContent = '';
-    feedback.classList.remove('error', 'success');
+    if (hint && hint.classList && hint.classList.contains("field-error")) {
+      hint.remove();
+    }
   }
 
   function lock(state) {
-    if (!btnSubmit) return;
-    btnSubmit.disabled = state;
-    btnSubmit.textContent = state ? 'Enviando…' : 'Enviar enlace';
+    btn.disabled = state;
+    btn.textContent = state ? "Enviando…" : "Enviar";
   }
 });

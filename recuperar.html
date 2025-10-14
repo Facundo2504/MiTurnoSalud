@@ -25,7 +25,7 @@
     <h1>Recuperar contraseña</h1>
     <p class="muted">Introduce tu correo electrónico para restablecer el acceso a tu cuenta.</p>
 
-    <form class="form" action="#" method="post" novalidate>
+    <form id="formRecuperar" class="form" novalidate>
       <div class="form__group">
         <label for="email">Correo electrónico</label>
         <input
@@ -40,6 +40,8 @@
           placeholder="tu@correo.com">
       </div>
 
+      <p class="form__feedback" aria-live="polite"></p>
+
       <button type="submit" class="btn btn--primary">Enviar</button>
 
       <p class="form__help">
@@ -48,9 +50,7 @@
     </form>
   </main>
 
-  <!-- Scripts -->
-  <script src="js/app.js" defer></script>
-  <script src="js/auth.js" defer></script>
+  <!-- Script único -->
   <script src="js/recuperar.js" defer></script>
 </body>
 </html>
