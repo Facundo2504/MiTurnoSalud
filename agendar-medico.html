@@ -4,83 +4,97 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width,initial-scale=1">
   <meta name="color-scheme" content="light dark">
-  <meta name="description" content="Selecciona el médico disponible para tu turno en MiTurnoSalud.">
-  <title>Agendar turno — Médico | MiTurnoSalud</title>
+  <title>Agendar turno - Selección de médico | MiTurnoSalud</title>
   <link rel="icon" href="assets/img/logo.svg">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Header -->
-  <header class="site-header" role="banner">
-    <div class="site-header__brand">
+  <header class="site-header">
+    <div class="brand">
       <a href="dashboard.html" class="brand__link">
         <img src="assets/img/logo.svg" alt="" aria-hidden="true" class="brand__logo">
         <span class="brand__name">MiTurnoSalud</span>
       </a>
     </div>
+    <nav class="site-nav">
+      <a href="dashboard.html">Inicio</a>
+      <a href="perfil.html">Perfil</a>
+      <a href="notificaciones.html">Notificaciones</a>
+    </nav>
   </header>
 
-  <!-- Layout -->
-  <div class="layout">
-    <!-- Sidebar -->
-    <aside class="sidebar" aria-label="Navegación secundaria">
-      <nav role="navigation">
-        <ul role="list">
-          <li class="nav__item nav__item--active">
-            <a href="dashboard.html" aria-current="page">Turnos</a>
-            <ul class="nav__sublist">
-              <li><a href="dashboard.html">Historial Turnos</a></li>
-              <li><a href="agendar-especialidad.html">Agendar Turno</a></li>
-            </ul>
-          </li>
-          <li><a href="#" aria-disabled="true">Perfil</a></li>
-          <li><a href="#" aria-disabled="true">Notificaciones</a></li>
-        </ul>
-      </nav>
-    </aside>
+  <main class="container">
+    <h1>Agendar turno</h1>
 
-    <!-- Main -->
-    <main class="content">
-      <h1>Agendar Turno</h1>
+    <ol class="stepper" aria-label="Pasos del agendamiento">
+      <li><a href="agendar-especialidad.html">1. Especialidad</a></li>
+      <li aria-current="step">2. Médico</li>
+      <li>3. Fecha y hora</li>
+      <li>4. Confirmación</li>
+    </ol>
 
-      <!-- Stepper -->
-      <div class="stepper" aria-label="Progreso de agendamiento">
-        <ol class="stepper__list">
-          <li class="stepper__item stepper__item--done"><span>Paso 1 · Especialidad</span></li>
-          <li class="stepper__item stepper__item--current"><span>Paso 2 · Médico</span></li>
-          <li class="stepper__item"><span>Paso 3 · Fecha y hora</span></li>
-          <li class="stepper__item"><span>Paso 4 · Institución</span></li>
-        </ol>
-      </div>
+    <section class="panel">
+      <h2>Seleccioná un profesional</h2>
+      <p class="muted" id="especialidadSeleccionada"></p>
 
-      <!-- Panel -->
-      <section class="panel">
-        <h2>Seleccionar Médico</h2>
-        <p class="muted" id="ayuda-medico">
-          Elegí un médico disponible para la especialidad seleccionada.
-        </p>
+      <form id="formMedico" class="form" novalidate>
+        <div id="listaMedicos" class="cards"></div>
+        <p class="form__feedback" aria-live="polite"></p>
+        <div class="actions">
+          <a href="agendar-especialidad.html" class="btn btn--ghost">← Volver</a>
+          <button type="submit" class="btn btn--primary">Continuar →</button>
+        </div>
+      </form>
+    </section>
+  </main>
 
-        <form class="form" action="agendar-fecha-hora.html" method="get" novalidate>
-          <div class="form__group">
-            <label for="medico">Médico</label>
-            <select id="medico" name="medico" required aria-describedby="ayuda-medico">
-              <!-- agendar-medico.js insertará las opciones según la especialidad -->
-              <option value="" selected disabled>Seleccione…</option>
-            </select>
-          </div>
+  <script>
+    // Mock mínimo de seguridad y datos
+    const Auth = {
+      requireAuth() {
+        const session = JSON.parse(localStorage.getItem("mts.session") || "null");
+        if (!session) {
+          const login = new URL("index.html", location.origin);
+          login.searchParams.set("next", "agendar-medico.html");
+          location.href = login.toString();
+        }
+      }
+    };
 
-          <div class="actions">
-            <button class="btn btn--ghost" type="button" onclick="history.back()">Volver</button>
-            <button class="btn btn--primary" type="submit">Confirmar</button>
-          </div>
-        </form>
-      </section>
-    </main>
-  </div>
+    const MTS = {
+      Data() {
+        return {
+          medicos: {
+            "Cardiología": [
+              { nombre: "Dra. Pérez", centro: "Clínica San Martín" },
+              { nombre: "Dr. López", centro: "Hospital Central" }
+            ],
+            "Pediatría": [
+              { nombre: "Dra. Castro", centro: "Hospital de Niños" },
+              { nombre: "Dr. Molina", centro: "Centro Médico Sur" }
+            ],
+            "Dermatología": [
+              { nombre: "Dra. Rivas", centro: "Clínica Dermaskin" },
+              { nombre: "Dr. Quintana", centro: "Hospital Belgrano" }
+            ],
+            "Traumatología": [
+              { nombre: "Dr. Giménez", centro: "Centro Ortopédico Norte" },
+              { nombre: "Dra. Vega", centro: "Clínica del Oeste" }
+            ]
+          }
+        };
+      },
+      Draft: {
+        get() {
+          return JSON.parse(localStorage.getItem("mts.draft") || "{}");
+        },
+        set(obj) {
+          localStorage.setItem("mts.draft", JSON.stringify(obj));
+        }
+      }
+    };
+  </script>
 
-  <!-- Scripts -->
-  <script src="js/app.js" defer></script>
-  <script src="js/auth.js" defer></script>
   <script src="js/agendar-medico.js" defer></script>
 </body>
 </html>

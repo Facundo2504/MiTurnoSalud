@@ -694,6 +694,31 @@ label + small.hint { display:block; margin-top: 6px; }
 /* Por si tus selects/inputs quedaron “apretados” */
 select { min-height: 46px; }
 
+.card--option {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: background .15s ease-in-out, transform .1s;
+}
+.card--option input[type="radio"] {
+  appearance: none;
+  width: 22px; height: 22px;
+  border: 2px solid var(--border);
+  border-radius: 50%;
+  margin: 0;
+  position: relative;
+}
+.card--option input[type="radio"]:checked {
+  border-color: var(--primary);
+  background: var(--primary);
+}
+.card--option:hover {
+  background: var(--panel-2);
+  transform: translateY(-1px);
+}
+.card--option h3 { margin: 0; color: var(--text-strong); }
+.card--option p { margin: 0; color: var(--muted); font-size: .9rem; }
 
 
 /* =========================================================
