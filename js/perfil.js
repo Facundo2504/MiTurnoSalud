@@ -1,15 +1,14 @@
-// perfil.js – Perfil MiTurnoSalud (vanilla)
-// - Guard de sesión con retorno a ?next=
-// - Tabs accesibles
-// - Tema claro/oscuro con persistencia (localStorage 'mts.theme')
-// - Formularios: General, Seguridad, Notif, Privacidad (mock localStorage)
+// perfil.js — Shell de Perfil con vistas externas
+// - Carga /perfil/<vista>.html según el hash (#/general, #/seguridad, …)
+// - Mantiene tab activo y foco accesible
+// - Guard de sesión y toggle de tema
 
 const LS_SESSION = "mts.session";
-const LS_PROFILE = "mts.user.profile";
 const LS_THEME   = "mts.theme";
 
+// ------- Bootstrap -------
 document.addEventListener("DOMContentLoaded", () => {
-  /* ---------- Guard de sesión ---------- */
+  // Guard de sesión
   const session = JSON.parse(localStorage.getItem(LS_SESSION) || "null");
   if (!session) {
     const login = new URL("index.html", location.origin);
@@ -18,17 +17,17 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  /* ---------- Tema (día/noche) ---------- */
+  // Tema persistente (oscuro por defecto)
   const root = document.documentElement;
-  const btnTheme = document.getElementById("btnTheme");
-  const savedTheme = localStorage.getItem(LS_THEME); // 'light' | 'dark' | null
+  const savedTheme = localStorage.getItem(LS_THEME);
   if (savedTheme === "light") root.setAttribute("data-theme", "light");
-  if (savedTheme === "dark")  root.removeAttribute("data-theme"); // dark por defecto
-  updateThemeButton();
 
+  // Toggle tema
+  const btnTheme = document.getElementById("btnTheme");
+  updateThemeButton();
   btnTheme.addEventListener("click", () => {
     if (root.getAttribute("data-theme") === "light") {
-      root.removeAttribute("data-theme");     // -> dark
+      root.removeAttribute("data-theme"); // dark
       localStorage.setItem(LS_THEME, "dark");
     } else {
       root.setAttribute("data-theme", "light");
@@ -36,215 +35,95 @@ document.addEventListener("DOMContentLoaded", () => {
     }
     updateThemeButton();
   });
-
   function updateThemeButton() {
     const isLight = root.getAttribute("data-theme") === "light";
     btnTheme.setAttribute("aria-pressed", String(isLight));
     btnTheme.textContent = isLight ? "🌙 Noche" : "🌞 Día";
   }
 
-  /* ---------- Tabs accesibles ---------- */
-  setupTabs();
-
-  /* ---------- Cargar/crear perfil ---------- */
-  let profile = JSON.parse(localStorage.getItem(LS_PROFILE) || "null");
-  if (!profile) {
-    profile = {
-      uid: "demo-uid",
-      email: session.email,
-      displayName: "Paciente Demo",
-      timeZone: "America/Argentina/Cordoba",
-      locale: "es",
-      photoURL: "",
-      accessibility: { highContrast: false, reducedMotion: false },
-      notificationPrefs: { channel: "email", hoursBefore: 24 },
-      privacy: { marketingOptIn: false, analyticsConsent: false }
-    };
-    localStorage.setItem(LS_PROFILE, JSON.stringify(profile));
-  }
-
-  /* ---------- General ---------- */
-  const fGen = document.getElementById("form-general");
-  const displayName = document.getElementById("displayName");
-  const timeZone = document.getElementById("timeZone");
-  const locale = document.getElementById("locale");
-  const avatarInput = document.getElementById("avatarInput");
-  const avatarPreview = document.getElementById("avatarPreview");
-  const highContrast = document.getElementById("highContrast");
-  const reducedMotion = document.getElementById("reducedMotion");
-
-  displayName.value = profile.displayName || "";
-  timeZone.value = profile.timeZone || "America/Argentina/Cordoba";
-  locale.value = profile.locale || "es";
-  if (profile.photoURL) avatarPreview.src = profile.photoURL;
-  highContrast.checked = !!profile.accessibility?.highContrast;
-  reducedMotion.checked = !!profile.accessibility?.reducedMotion;
-
-  avatarInput.addEventListener("change", (e) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    const reader = new FileReader();
-    reader.onload = () => { avatarPreview.src = reader.result; };
-    reader.readAsDataURL(file);
-  });
-
-  fGen.addEventListener("submit", (e) => {
-    e.preventDefault();
-    clearErrors(fGen);
-
-    if (!displayName.value.trim()) {
-      setFieldError(displayName, "El nombre es obligatorio.");
-      return;
-    }
-
-    profile.displayName = displayName.value.trim();
-    profile.timeZone = timeZone.value;
-    profile.locale = locale.value;
-    profile.photoURL = avatarPreview.src || "";
-    profile.accessibility = {
-      highContrast: highContrast.checked,
-      reducedMotion: reducedMotion.checked
-    };
-
-    localStorage.setItem(LS_PROFILE, JSON.stringify(profile));
-    // aplicar accesibilidad
-    document.documentElement.classList.toggle("high-contrast", highContrast.checked);
-    document.documentElement.classList.toggle("reduced-motion", reducedMotion.checked);
-
-    toast("Perfil actualizado ✅");
-  });
-
-  /* ---------- Seguridad (mock) ---------- */
-  const fSec = document.getElementById("form-seguridad");
-  const currentEmail = document.getElementById("currentEmail");
-  const currentPassword = document.getElementById("currentPassword");
-  const newEmail = document.getElementById("newEmail");
-  const newPassword = document.getElementById("newPassword");
-
-  currentEmail.value = profile.email || session.email || "";
-
-  fSec.addEventListener("submit", (e) => {
-    e.preventDefault();
-    clearErrors(fSec);
-
-    if (!currentEmail.value.trim() || !currentPassword.value) {
-      setFieldError(currentEmail, "Email y contraseña actuales son requeridos.");
-      return;
-    }
-    if (newEmail.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail.value)) {
-      setFieldError(newEmail, "Nuevo email inválido.");
-      return;
-    }
-    if (newPassword.value && newPassword.value.length < 8) {
-      setFieldError(newPassword, "La nueva contraseña debe tener al menos 8 caracteres.");
-      return;
-    }
-
-    if (newEmail.value) profile.email = newEmail.value.trim();
-    localStorage.setItem(LS_PROFILE, JSON.stringify(profile));
-
-    currentPassword.value = "";
-    newPassword.value = "";
-    toast("Seguridad actualizada (mock)");
-  });
-
-  /* ---------- Notificaciones ---------- */
-  const fNot = document.getElementById("form-notif");
-  const channel = document.getElementById("channel");
-  const hoursBefore = document.getElementById("hoursBefore");
-
-  channel.value = profile.notificationPrefs?.channel || "email";
-  hoursBefore.value = profile.notificationPrefs?.hoursBefore ?? 24;
-
-  fNot.addEventListener("submit", (e) => {
-    e.preventDefault();
-    clearErrors(fNot);
-
-    const hb = parseInt(hoursBefore.value || "24", 10);
-    if (Number.isNaN(hb) || hb < 1 || hb > 168) {
-      setFieldError(hoursBefore, "Debe estar entre 1 y 168.");
-      return;
-    }
-    profile.notificationPrefs = { channel: channel.value, hoursBefore: hb };
-    localStorage.setItem(LS_PROFILE, JSON.stringify(profile));
-    toast("Preferencias de notificación guardadas");
-  });
-
-  /* ---------- Privacidad ---------- */
-  const fPriv = document.getElementById("form-priv");
-  const marketingOptIn = document.getElementById("marketingOptIn");
-  const analyticsConsent = document.getElementById("analyticsConsent");
-
-  marketingOptIn.checked = !!profile.privacy?.marketingOptIn;
-  analyticsConsent.checked = !!profile.privacy?.analyticsConsent;
-
-  fPriv.addEventListener("submit", (e) => {
-    e.preventDefault();
-    profile.privacy = {
-      marketingOptIn: marketingOptIn.checked,
-      analyticsConsent: analyticsConsent.checked
-    };
-    localStorage.setItem(LS_PROFILE, JSON.stringify(profile));
-    toast("Preferencias de privacidad guardadas");
-  });
-
-  /* ---------- Cerrar sesión ---------- */
+  // Logout
   document.getElementById("btnLogout")?.addEventListener("click", () => {
     localStorage.removeItem(LS_SESSION);
     location.href = "index.html";
   });
 
-  /* ---------- Utils UI ---------- */
-  function toast(msg, ms = 2000) {
-    const t = document.getElementById("toast");
-    t.textContent = msg;
-    t.hidden = false;
-    setTimeout(() => { t.hidden = true; t.textContent = ""; }, ms);
-  }
+  // Router inicial y listeners
+  if (!location.hash) location.replace("#/general");
+  renderRoute();
+  window.addEventListener("hashchange", renderRoute);
 
-  function setFieldError(input, message) {
-    if (!input) return;
-    input.classList.add("is-invalid");
-    input.setAttribute("aria-invalid", "true");
-    let hint = input.nextElementSibling && input.nextElementSibling.classList?.contains("field-error")
-      ? input.nextElementSibling
-      : null;
-    if (!hint) {
-      hint = document.createElement("div");
-      hint.className = "field-error";
-      input.insertAdjacentElement("afterend", hint);
-    }
-    hint.textContent = message;
-    input.focus();
-  }
-
-  function clearErrors(scope) {
-    scope.querySelectorAll(".is-invalid").forEach(n => n.classList.remove("is-invalid"));
-    scope.querySelectorAll(".field-error").forEach(n => n.remove());
-  }
+  // Mejoras: focus al main después de cargar
+  document.getElementById("main").focus({ preventScroll: true });
 });
 
-/* ===== Tabs accesibles ===== */
-function setupTabs() {
-  const list = document.querySelector('[role="tablist"]');
-  const tabs = list.querySelectorAll('[role="tab"]');
-  tabs.forEach((tab, i) => {
-    tab.addEventListener("click", () => activateTab(tab, list));
-    tab.addEventListener("keydown", (e) => {
-      const idx = Array.from(tabs).indexOf(tab);
-      if (e.key === "ArrowRight") tabs[Math.min(idx + 1, tabs.length - 1)].focus();
-      if (e.key === "ArrowLeft")  tabs[Math.max(idx - 1, 0)].focus();
+// ------- Router -------
+const ROUTES = new Map([
+  ["/general",        { tab: "tab-general",        file: "perfil/general.html",        title: "General" }],
+  ["/seguridad",      { tab: "tab-seguridad",      file: "perfil/seguridad.html",      title: "Seguridad" }],
+  ["/notificaciones", { tab: "tab-notificaciones", file: "perfil/notificaciones.html", title: "Notificaciones" }],
+  ["/privacidad",     { tab: "tab-privacidad",     file: "perfil/privacidad.html",     title: "Privacidad" }]
+]);
+
+async function renderRoute() {
+  const view = document.getElementById("view");
+  const hash = location.hash.replace(/^#/, ""); // "#/general" -> "/general"
+  const route = ROUTES.get(hash) || ROUTES.get("/general");
+
+  // Activar tab adecuado
+  setActiveTab(route.tab);
+
+  // Cargar vista
+  view.setAttribute("aria-busy", "true");
+  view.innerHTML = `<p class="hint">Cargando ${route.title}…</p>`;
+  try {
+    const html = await fetch(route.file, { cache: "no-cache" }).then(r => {
+      if (!r.ok) throw new Error(`No se pudo cargar ${route.file} (${r.status})`);
+      return r.text();
     });
-    if (i > 0) tab.setAttribute("tabindex", "-1");
+    // Si es una página completa, extraer <body>; si es fragmento, usar tal cual
+    const fragment = extractBodyOrFragment(html);
+    view.innerHTML = fragment;
+
+    // Auto-inicialización opcional: si la vista adjunta window.initPerfilView
+    if (typeof window.initPerfilView === "function") {
+      try { window.initPerfilView(hash.slice(1)); } catch {}
+    }
+  } catch (err) {
+    console.error(err);
+    view.innerHTML = `
+      <div>
+        <h2>Error</h2>
+        <p>No pudimos cargar <code>${route.file}</code>.</p>
+        <p class="hint">${String(err.message || err)}</p>
+      </div>`;
+  } finally {
+    view.setAttribute("aria-busy", "false");
+    // Mover foco al título principal de la vista si existe
+    const firstHeading = view.querySelector("h1, h2, [role='heading']");
+    (firstHeading || view).focus?.();
+  }
+}
+
+function setActiveTab(tabId) {
+  document.querySelectorAll('[role="tab"]').forEach((el) => {
+    const active = el.id === tabId;
+    el.setAttribute("aria-selected", String(active));
+    el.setAttribute("tabindex", active ? "0" : "-1");
   });
 }
-function activateTab(tab, list) {
-  const tabs = list.querySelectorAll('[role="tab"]');
-  tabs.forEach(t => {
-    const selected = t === tab;
-    t.setAttribute("aria-selected", String(selected));
-    t.setAttribute("tabindex", selected ? "0" : "-1");
-    const panel = document.getElementById(t.getAttribute("aria-controls"));
-    if (panel) panel.hidden = !selected;
-  });
+
+function extractBodyOrFragment(html) {
+  // Si el HTML contiene <body>, capturar su contenido; si no, devolver tal cual (fragmento)
+  const hasBody = /<body[\s\S]*<\/body>/i.test(html);
+  if (!hasBody) return html;
+  const m = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
+  return m ? m[1] : html;
+}
+
+// ------- Utils opcionales -------
+function toast(msg, ms = 2000) {
+  const t = document.getElementById("toast");
+  t.textContent = msg;
+  t.classList.remove("hidden");
+  setTimeout(() => { t.classList.add("hidden"); t.textContent = ""; }, ms);
 }

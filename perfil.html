@@ -22,11 +22,7 @@
       <a href="perfil.html" aria-current="page">Perfil</a>
       <a href="notificaciones.html">Notificaciones</a>
 
-      <!-- Botón modo Día/Noche -->
-      <button id="btnTheme" class="btn btn--ghost" type="button" aria-pressed="false" title="Cambiar tema">
-        🌞/🌙
-      </button>
-
+      <button id="btnTheme" class="btn btn--ghost" type="button" aria-pressed="false" title="Cambiar tema">🌞/🌙</button>
       <button id="btnLogout" class="btn btn--ghost" type="button">Cerrar sesión</button>
     </nav>
   </header>
@@ -34,132 +30,18 @@
   <main id="main" class="wrap" tabindex="-1">
     <h1>Tu perfil</h1>
 
-    <!-- Tabs accesibles -->
+    <!-- Tabs (router por hash) -->
     <div class="tabs" role="tablist" aria-label="Secciones de perfil">
-      <button role="tab" aria-selected="true" aria-controls="panel-general" id="tab-general">General</button>
-      <button role="tab" aria-selected="false" aria-controls="panel-seguridad" id="tab-seguridad" tabindex="-1">Seguridad</button>
-      <button role="tab" aria-selected="false" aria-controls="panel-notif" id="tab-notif" tabindex="-1">Notificaciones</button>
-      <button role="tab" aria-selected="false" aria-controls="panel-priv" id="tab-priv" tabindex="-1">Privacidad</button>
+      <a role="tab" id="tab-general"      href="#/general"      aria-selected="true">General</a>
+      <a role="tab" id="tab-seguridad"    href="#/seguridad"    aria-selected="false" tabindex="-1">Seguridad</a>
+      <a role="tab" id="tab-notificaciones" href="#/notificaciones" aria-selected="false" tabindex="-1">Notificaciones</a>
+      <a role="tab" id="tab-privacidad"   href="#/privacidad"   aria-selected="false" tabindex="-1">Privacidad</a>
     </div>
 
-    <!-- Panel: General -->
-    <section id="panel-general" role="tabpanel" aria-labelledby="tab-general">
-      <form id="form-general" class="card" novalidate>
-        <div class="row">
-          <div class="field">
-            <label for="displayName">Nombre para mostrar</label>
-            <input id="displayName" name="displayName" type="text" placeholder="Ej: Ana Pérez" required />
-            <small class="hint">Así verán tu nombre en recordatorios y turnos.</small>
-          </div>
+    <!-- Contenedor donde se cargan las vistas -->
+    <section id="view" class="card view" aria-live="polite" aria-busy="false"></section>
 
-          <div class="field">
-            <label for="timeZone">Zona horaria</label>
-            <select id="timeZone" name="timeZone">
-              <option value="America/Argentina/Cordoba">America/Argentina/Cordoba</option>
-              <option value="America/Buenos_Aires">America/Buenos_Aires</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="locale">Idioma</label>
-            <select id="locale" name="locale">
-              <option value="es">Español</option>
-              <option value="en">English</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="avatarInput">Foto de perfil</label>
-            <input id="avatarInput" name="avatar" type="file" accept="image/*" />
-            <div class="avatar-wrap">
-              <img id="avatarPreview" class="avatar" alt="Vista previa del avatar" />
-            </div>
-          </div>
-
-          <div class="field checkbox">
-            <label><input id="highContrast" type="checkbox" /> Alto contraste</label>
-          </div>
-
-          <div class="field checkbox">
-            <label><input id="reducedMotion" type="checkbox" /> Reducir movimiento</label>
-          </div>
-        </div>
-
-        <div class="actions">
-          <button type="submit" class="btn">Guardar</button>
-        </div>
-      </form>
-    </section>
-
-    <!-- Panel: Seguridad -->
-    <section id="panel-seguridad" role="tabpanel" aria-labelledby="tab-seguridad" hidden>
-      <form id="form-seguridad" class="card" novalidate>
-        <div class="row">
-          <div class="field">
-            <label for="currentEmail">Email actual</label>
-            <input id="currentEmail" name="currentEmail" type="email" required />
-          </div>
-          <div class="field">
-            <label for="currentPassword">Contraseña actual</label>
-            <input id="currentPassword" name="currentPassword" type="password" required />
-          </div>
-          <div class="field">
-            <label for="newEmail">Nuevo email</label>
-            <input id="newEmail" name="newEmail" type="email" placeholder="opcional" />
-          </div>
-          <div class="field">
-            <label for="newPassword">Nueva contraseña</label>
-            <input id="newPassword" name="newPassword" type="password" minlength="8" placeholder="mín. 8 caracteres" />
-          </div>
-        </div>
-        <p class="hint">Para cambios sensibles se requiere tu email y contraseña actuales (mock).</p>
-        <div class="actions">
-          <button type="submit" class="btn">Actualizar seguridad</button>
-        </div>
-      </form>
-    </section>
-
-    <!-- Panel: Notificaciones -->
-    <section id="panel-notif" role="tabpanel" aria-labelledby="tab-notif" hidden>
-      <form id="form-notif" class="card" novalidate>
-        <div class="row">
-          <div class="field">
-            <label for="channel">Canal preferido</label>
-            <select id="channel" name="channel">
-              <option value="email">Email</option>
-              <option value="sms">SMS</option>
-              <option value="whatsapp">WhatsApp</option>
-            </select>
-          </div>
-
-          <div class="field">
-            <label for="hoursBefore">Horas antes del turno</label>
-            <input id="hoursBefore" name="hoursBefore" type="number" min="1" max="168" value="24" />
-            <small class="hint">Entre 1 y 168.</small>
-          </div>
-        </div>
-        <div class="actions">
-          <button type="submit" class="btn">Guardar preferencias</button>
-        </div>
-      </form>
-    </section>
-
-    <!-- Panel: Privacidad -->
-    <section id="panel-priv" role="tabpanel" aria-labelledby="tab-priv" hidden>
-      <form id="form-priv" class="card" novalidate>
-        <div class="row row--1">
-          <label class="checkbox"><input id="marketingOptIn" type="checkbox" /> Recibir comunicaciones de novedades</label>
-          <label class="checkbox"><input id="analyticsConsent" type="checkbox" /> Permitir analíticas anónimas</label>
-        </div>
-        <div class="actions">
-          <button type="submit" class="btn">Guardar privacidad</button>
-          <button type="button" class="btn btn--danger" id="btnExport">Exportar datos (JSON)</button>
-          <button type="button" class="btn btn--outline-danger" id="btnDelete">Eliminar cuenta (mock)</button>
-        </div>
-      </form>
-    </section>
-
-    <div id="toast" role="status" aria-live="polite" class="toast" hidden></div>
+    <div id="toast" role="status" aria-live="polite" class="toast hidden"></div>
   </main>
 
   <script src="perfil.js" defer></script>
