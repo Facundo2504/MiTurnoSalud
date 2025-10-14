@@ -4,46 +4,48 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="color-scheme" content="light dark" />
-  <title>Perfil — MiTurnoSalud</title>
+  <title>Perfil del usuario | MiTurnoSalud</title>
   <link rel="icon" href="assets/img/logo.svg" />
+  <link rel="stylesheet" href="styles.css" />
   <link rel="stylesheet" href="perfil.css" />
 </head>
+
 <body>
-  <a class="skip" href="#main">Saltar al contenido</a>
+  <a class="skip" href="#main">Saltar al contenido principal</a>
 
-  <header class="topbar" role="banner">
-    <div class="brand">
-      <img src="assets/img/logo.svg" alt="" aria-hidden="true" width="28" height="28" />
-      <strong>MiTurnoSalud</strong>
+  <header class="site-header">
+    <div class="site-header__brand">
+      <a href="dashboard.html" class="brand__link">
+        <img src="assets/img/logo.svg" alt="" aria-hidden="true" class="brand__logo">
+        <span class="brand__name">MiTurnoSalud</span>
+      </a>
     </div>
-
-    <nav aria-label="Principal" class="topbar__nav">
-      <a href="dashboard.html">Dashboard</a>
+    <nav aria-label="Principal">
+      <a href="dashboard.html">Inicio</a>
       <a href="perfil.html" aria-current="page">Perfil</a>
       <a href="notificaciones.html">Notificaciones</a>
-
-      <button id="btnTheme" class="btn btn--ghost" type="button" aria-pressed="false" title="Cambiar tema">🌞/🌙</button>
-      <button id="btnLogout" class="btn btn--ghost" type="button">Cerrar sesión</button>
+      <button id="btnTheme" class="btn btn--ghost">🌞 Día</button>
+      <button id="btnLogout" class="btn btn--ghost">Cerrar sesión</button>
     </nav>
   </header>
 
-  <main id="main" class="wrap" tabindex="-1">
-    <h1>Tu perfil</h1>
+  <main id="main" class="wrap perfil" tabindex="-1">
+    <aside class="perfil__nav" aria-label="Opciones de perfil">
+      <ul role="tablist">
+        <li><button id="tab-general" role="tab" aria-controls="view" aria-selected="true" data-route="/general">General</button></li>
+        <li><button id="tab-seguridad" role="tab" aria-controls="view" aria-selected="false" data-route="/seguridad">Seguridad</button></li>
+        <li><button id="tab-notificaciones" role="tab" aria-controls="view" aria-selected="false" data-route="/notificaciones">Notificaciones</button></li>
+        <li><button id="tab-privacidad" role="tab" aria-controls="view" aria-selected="false" data-route="/privacidad">Privacidad</button></li>
+      </ul>
+    </aside>
 
-    <!-- Tabs (router por hash) -->
-    <div class="tabs" role="tablist" aria-label="Secciones de perfil">
-      <a role="tab" id="tab-general"      href="#/general"      aria-selected="true">General</a>
-      <a role="tab" id="tab-seguridad"    href="#/seguridad"    aria-selected="false" tabindex="-1">Seguridad</a>
-      <a role="tab" id="tab-notificaciones" href="#/notificaciones" aria-selected="false" tabindex="-1">Notificaciones</a>
-      <a role="tab" id="tab-privacidad"   href="#/privacidad"   aria-selected="false" tabindex="-1">Privacidad</a>
-    </div>
-
-    <!-- Contenedor donde se cargan las vistas -->
-    <section id="view" class="card view" aria-live="polite" aria-busy="false"></section>
-
-    <div id="toast" role="status" aria-live="polite" class="toast hidden"></div>
+    <section id="view" class="perfil__view" aria-live="polite">
+      <p class="hint">Cargando…</p>
+    </section>
   </main>
 
-  <script src="perfil.js" defer></script>
+  <div id="toast" class="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/perfil.js" defer></script>
 </body>
 </html>

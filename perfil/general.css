@@ -1,0 +1,67 @@
+/* ===================== */
+/* PERFIL → GENERAL      */
+/* ===================== */
+
+.perfil-general {
+  background: var(--panel);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: var(--shadow-1);
+}
+
+.perfil-general h1 {
+  font-size: 1.5rem;
+  margin-bottom: .25rem;
+}
+
+.perfil-general .muted {
+  margin-bottom: 1.5rem;
+  color: var(--muted);
+}
+
+.form__group {
+  margin-bottom: 1rem;
+}
+
+.form__group label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: .35rem;
+}
+
+.form__group input,
+.form__group select {
+  width: 100%;
+  padding: .65rem .8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-2);
+  color: var(--text);
+  transition: border-color .15s ease;
+}
+
+.form__group input:focus,
+.form__group select:focus {
+  border-color: var(--brand-500);
+  outline: none;
+}
+
+.form__feedback {
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+.form__feedback.success { color: var(--success); }
+.form__feedback.error { color: var(--danger); }
+
+.actions {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1.25rem;
+}
+
+@media (max-width: 600px) {
+  .perfil-general { padding: 1rem; }
+}
+/* ===================== */
+/* GENERAL               */
