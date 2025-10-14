@@ -1,144 +1,104 @@
-/* registro.js – Alta de usuario en MiTurnoSalud
-   - Valida: nombre, apellido, email, teléfono (opcional), contraseña (mín. 8)
-   - Feedback accesible y bloqueo de botón al procesar
-   - Usa Auth.register(...) y redirige al dashboard
-*/
-document.addEventListener('DOMContentLoaded', () => {
-  // Si ya hay sesión activa, redirige al dashboard
-  Auth.redirectIfAuth();
+// js/registro.js — versión final coherente con login.js y dashboard.js
+const LS_USERS = "mts.users";
+const LS_SESSION = "mts.session";
+const LS_PROFILE = "mts.user.profile";
 
-  const form = document.querySelector('form.form');
+document.addEventListener("DOMContentLoaded", () => {
+  const form = document.getElementById("formRegistro");
   if (!form) return;
 
-  // Referencias
-  const $ = (sel, root = document) => root.querySelector(sel);
-  const nombre     = $('#nombre', form);
-  const apellido   = $('#apellido', form);
-  const email      = $('#email', form);
-  const obraSocial = $('#obraSocial', form);
-  const telefono   = $('#telefono', form);
-  const password   = $('#password', form);
-  const btnSubmit  = form.querySelector('button[type="submit"]');
+  const nombre = form.querySelector("#nombre");
+  const apellido = form.querySelector("#apellido");
+  const email = form.querySelector("#email");
+  const obraSocial = form.querySelector("#obraSocial");
+  const telefono = form.querySelector("#telefono");
+  const password = form.querySelector("#password");
+  const btn = form.querySelector('button[type="submit"]');
 
-  // Feedback general accesible
-  let feedback = form.querySelector('.form__feedback');
-  if (!feedback) {
-    feedback = document.createElement('p');
-    feedback.className = 'form__feedback';
-    feedback.setAttribute('aria-live', 'polite');
-    form.appendChild(feedback);
-  }
+  // feedback
+  let feedback = document.createElement("p");
+  feedback.className = "form__feedback";
+  feedback.setAttribute("aria-live", "polite");
+  form.appendChild(feedback);
 
-  // Limpiar errores visuales al escribir
-  [nombre, apellido, email, obraSocial, telefono, password].forEach(inp => {
-    inp?.addEventListener('input', () => clearFieldError(inp));
-  });
-
-  form.addEventListener('submit', (e) => {
+  form.addEventListener("submit", (e) => {
     e.preventDefault();
-    clearFormFeedback();
+    feedback.textContent = "";
 
-    const data = {
-      name: (nombre?.value || '').trim(),
-      lastName: (apellido?.value || '').trim(),
-      email: (email?.value || '').trim().toLowerCase(),
-      obraSocial: (obraSocial?.value || '').trim(),
-      telefono: (telefono?.value || '').trim(),
-      password: (password?.value || '').trim()
-    };
+    // validaciones básicas
+    if (!nombre.value.trim() || !apellido.value.trim() || !email.value.trim() || !password.value.trim()) {
+      feedback.textContent = "⚠️ Completa todos los campos obligatorios.";
+      return;
+    }
 
-    const ok = validateAll(data);
-    if (!ok) return;
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value)) {
+      feedback.textContent = "Correo electrónico inválido.";
+      email.focus();
+      return;
+    }
 
-    lock(true);
+    if (password.value.length < 8) {
+      feedback.textContent = "La contraseña debe tener al menos 8 caracteres.";
+      password.focus();
+      return;
+    }
+
+    btn.disabled = true;
+    btn.textContent = "Registrando…";
+
     try {
-      Auth.register(data); // guarda y abre sesión
-      showFormFeedback('✅ Registro exitoso. Redirigiendo…', 'success');
-      setTimeout(() => location.assign('dashboard.html'), 800);
+      // obtener lista de usuarios (mock)
+      const users = JSON.parse(localStorage.getItem(LS_USERS) || "[]");
+      if (users.some(u => u.email === email.value.trim().toLowerCase())) {
+        feedback.textContent = "Este correo ya está registrado.";
+        btn.disabled = false;
+        btn.textContent = "Registrarse";
+        return;
+      }
+
+      // crear nuevo usuario
+      const newUser = {
+        uid: crypto.randomUUID(),
+        nombre: nombre.value.trim(),
+        apellido: apellido.value.trim(),
+        email: email.value.trim().toLowerCase(),
+        obraSocial: obraSocial.value.trim() || "",
+        telefono: telefono.value.trim() || "",
+        password: password.value,
+        createdAt: new Date().toISOString()
+      };
+      users.push(newUser);
+      localStorage.setItem(LS_USERS, JSON.stringify(users));
+
+      // crear perfil asociado
+      const profile = {
+        uid: newUser.uid,
+        email: newUser.email,
+        displayName: `${newUser.nombre} ${newUser.apellido}`,
+        obraSocial: newUser.obraSocial,
+        telefono: newUser.telefono,
+        locale: "es",
+        timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        createdAt: newUser.createdAt
+      };
+      localStorage.setItem(LS_PROFILE, JSON.stringify(profile));
+
+      // crear sesión
+      localStorage.setItem(LS_SESSION, JSON.stringify({
+        email: newUser.email,
+        loggedInAt: new Date().toISOString()
+      }));
+
+      feedback.textContent = "✅ Registro exitoso. Redirigiendo…";
+      setTimeout(() => {
+        location.href = "dashboard.html";
+      }, 800);
     } catch (err) {
-      showFormFeedback(err.message || '❌ No se pudo completar el registro.', 'error');
+      console.error(err);
+      feedback.textContent = "❌ Error al registrar usuario.";
     } finally {
-      lock(false);
+      btn.disabled = false;
+      btn.textContent = "Registrarse";
     }
   });
-
-  /* ---------------------- Validaciones ---------------------- */
-  function validateAll({ name, lastName, email, telefono, password }) {
-    let valid = true;
-
-    if (!/^.{2,}$/.test(name)) {
-      setFieldError(nombre, 'El nombre debe tener al menos 2 caracteres.');
-      valid = false;
-    }
-
-    if (!/^.{2,}$/.test(lastName)) {
-      setFieldError(apellido, 'El apellido debe tener al menos 2 caracteres.');
-      valid = false;
-    }
-
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-      setFieldError(email, 'Ingresa un correo válido (ej: nombre@dominio.com).');
-      valid = false;
-    }
-
-    if (telefono && telefono.value && !/^[0-9+\-() ]{6,}$/.test(telefono.value)) {
-      setFieldError(telefono, 'El teléfono debe tener al menos 6 dígitos (se permiten + - ( ) y espacios).');
-      valid = false;
-    }
-
-    if (!password || password.length < 8) {
-      setFieldError(password, 'La contraseña debe tener al menos 8 caracteres.');
-      valid = false;
-    }
-
-    if (!valid) {
-      showFormFeedback('⚠️ Revisa los campos marcados en rojo.', 'error');
-    }
-    return valid;
-  }
-
-  /* ---------------------- UI Helpers ---------------------- */
-  function setFieldError(input, message) {
-    if (!input) return;
-    input.setAttribute('aria-invalid', 'true');
-    input.classList.add('is-invalid');
-
-    let hint = input.nextElementSibling?.classList?.contains('field-error')
-      ? input.nextElementSibling
-      : null;
-
-    if (!hint) {
-      hint = document.createElement('div');
-      hint.className = 'field-error';
-      input.insertAdjacentElement('afterend', hint);
-    }
-    hint.textContent = message;
-  }
-
-  function clearFieldError(input) {
-    if (!input) return;
-    input.removeAttribute('aria-invalid');
-    input.classList.remove('is-invalid');
-    const hint = input.nextElementSibling;
-    if (hint && hint.classList.contains('field-error')) {
-      hint.remove();
-    }
-  }
-
-  function showFormFeedback(msg, type = 'info') {
-    feedback.textContent = msg;
-    feedback.classList.remove('error', 'success');
-    feedback.classList.add(type);
-  }
-
-  function clearFormFeedback() {
-    feedback.textContent = '';
-    feedback.classList.remove('error', 'success');
-  }
-
-  function lock(state) {
-    if (!btnSubmit) return;
-    btnSubmit.disabled = state;
-    btnSubmit.textContent = state ? 'Registrando…' : 'Registrarse';
-  }
 });
