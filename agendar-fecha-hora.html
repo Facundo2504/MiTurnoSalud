@@ -27,14 +27,15 @@
       <nav role="navigation">
         <ul role="list">
           <li class="nav__item nav__item--active">
-            <a href="dashboard.html" aria-current="page">Turnos</a>
+            <a href="dashboard.html">Turnos</a>
             <ul class="nav__sublist">
               <li><a href="dashboard.html">Historial Turnos</a></li>
-              <li><a href="agendar-especialidad.html">Agendar Turno</a></li>
+              <li><a href="agendar-especialidad.html" aria-current="page">Agendar Turno</a></li>
             </ul>
           </li>
-          <li><a href="#" aria-disabled="true">Perfil</a></li>
-          <li><a href="#" aria-disabled="true">Notificaciones</a></li>
+          <!-- Enlaces reales (no deshabilitados) -->
+          <li><a href="perfil.html">Perfil</a></li>
+          <li><a href="notificaciones.html">Notificaciones</a></li>
         </ul>
       </nav>
     </aside>
@@ -56,9 +57,9 @@
       <!-- Panel principal -->
       <section class="panel">
         <h2>Seleccionar Fecha y Hora</h2>
-        <p class="muted">Elige el día y el horario que prefieras para tu turno médico.</p>
+        <p class="muted">Elegí el día y el horario que prefieras para tu turno.</p>
 
-        <form class="form" action="agendar-institucion.html" method="get" novalidate>
+        <form class="form" id="formFechaHora" novalidate>
           <!-- Fecha -->
           <div class="form__group">
             <label for="fecha">Fecha</label>
@@ -70,13 +71,13 @@
               min=""
               autocomplete="off"
               aria-describedby="ayuda-fecha">
-            <p id="ayuda-fecha" class="form__help">No se pueden seleccionar fechas anteriores a hoy.</p>
+            <p id="ayuda-fecha" class="form__help">No podés seleccionar fechas anteriores a hoy.</p>
           </div>
 
           <!-- Horarios -->
           <fieldset class="form__group" aria-describedby="ayuda-hora">
-            <legend>Selecciona un horario disponible</legend>
-            <p id="ayuda-hora" class="form__help sr-only">Elige una de las opciones de horario.</p>
+            <legend>Seleccioná un horario disponible</legend>
+            <p id="ayuda-hora" class="form__help sr-only">Elegí una opción de horario.</p>
 
             <div class="times">
               <label class="time"><input type="radio" name="hora" value="09:00" required> 09:00</label>
@@ -92,7 +93,7 @@
 
           <!-- Acciones -->
           <div class="actions">
-            <button type="button" class="btn btn--ghost" onclick="history.back()">Volver</button>
+            <a href="agendar-medico.html" class="btn btn--ghost">← Volver</a>
             <button type="submit" class="btn btn--primary">Continuar — Elegir institución</button>
           </div>
         </form>
@@ -100,9 +101,36 @@
     </main>
   </div>
 
-  <!-- Scripts -->
-  <script src="js/app.js" defer></script>
-  <script src="js/auth.js" defer></script>
+  <!-- Bootstrap mínimo: Auth + MTS -->
+  <script>
+    const Auth = {
+      requireAuth(){
+        const s = JSON.parse(localStorage.getItem("mts.session") || "null");
+        if(!s){
+          const login = new URL("index.html", location.origin);
+          login.searchParams.set("next", "agendar-fecha-hora.html");
+          location.replace(login.toString());
+        }
+      }
+    };
+    const MTS = {
+      todayISO(){
+        const d = new Date();
+        const m = String(d.getMonth()+1).padStart(2,'0');
+        const day = String(d.getDate()).padStart(2,'0');
+        return `${d.getFullYear()}-${m}-${day}`;
+      },
+      Draft:{
+        get(){ return JSON.parse(localStorage.getItem("mts.draft") || "{}"); },
+        set(patch){
+          const prev = MTS.Draft.get();
+          localStorage.setItem("mts.draft", JSON.stringify({ ...prev, ...patch }));
+        }
+      }
+    };
+  </script>
+
+  <!-- Script definitivo -->
   <script src="js/agendar-fecha-hora.js" defer></script>
 </body>
 </html>

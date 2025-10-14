@@ -1,12 +1,16 @@
-/* agendar-fecha-hora.js – Paso 3 (versión final) */
+/* agendar-fecha-hora.js – Paso 3 (versión final y coherente) */
 document.addEventListener('DOMContentLoaded', () => {
   try { Auth.requireAuth(); } catch { location.replace('index.html'); return; }
 
   const draft = MTS.Draft.get();
-  if (!draft.specialty || !draft.doctor) { location.replace('agendar-especialidad.html'); return; }
+  // 👇 claves correctas según pasos previos
+  if (!draft.especialidad || !draft.medico) {
+    location.replace('agendar-especialidad.html'); 
+    return;
+  }
 
-  const form = document.querySelector('form.form');
-  const inputDate = document.querySelector('#fecha');
+  const form = document.getElementById('formFechaHora');
+  const inputDate = document.getElementById('fecha');
   const btnSubmit = form?.querySelector('button[type="submit"]');
 
   // feedback accesible
@@ -31,7 +35,7 @@ document.addEventListener('DOMContentLoaded', () => {
   };
   const ymdNum = (iso) => iso ? iso.split('-').map(Number).reduce((a,b,i)=>a* (i?100:1) + b) : NaN;
 
-  // resalta horario seleccionado (opcional)
+  // resalta horario seleccionado (visual)
   document.querySelectorAll('.time input[name="hora"]').forEach(radio => {
     radio.addEventListener('change', (e) => {
       document.querySelectorAll('.time').forEach(el => el.classList.remove('time--selected'));
@@ -64,7 +68,8 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     lock(true);
-    MTS.Draft.set({ date: dateIso, time });
+    // 👇 mergear con el draft previo (NO sobrescribir)
+    MTS.Draft.set({ fecha: dateIso, hora: time });
     showFeedback('✅ Fecha y hora guardadas. Avanzando…', 'success');
     setTimeout(() => location.assign('agendar-institucion.html'), 600);
   });
