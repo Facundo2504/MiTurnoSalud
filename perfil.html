@@ -6,47 +6,28 @@
   <meta name="color-scheme" content="light dark" />
   <title>Perfil — MiTurnoSalud</title>
   <link rel="icon" href="assets/img/logo.svg" />
-  <link rel="stylesheet" href="styles.css" />
-  <style>
-    /* Estilos mínimos complementarios (usa tu styles.css principal) */
-    .wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
-    .brand { display:flex; align-items:center; gap:.5rem; }
-    .brand img { width:28px; height:28px }
-    .topbar { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:#0d6efd; color:#fff; }
-    .topbar a { color:#fff; text-decoration:none; margin-left:12px; }
-    .avatar { width:96px; height:96px; border-radius:50%; object-fit:cover; border:1px solid #e5e7eb; }
-    .row { display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:12px; }
-    .card { border:1px solid #e5e7eb; border-radius:10px; padding:16px; background:#fff; }
-    .tabs { display:inline-flex; gap:4px; border-bottom:1px solid #e5e7eb; margin:12px 0; }
-    [role="tab"] { padding:10px 12px; background:#f8fafc; border:1px solid #e5e7eb; border-bottom:none; border-radius:8px 8px 0 0; }
-    [role="tab"][aria-selected="true"] { background:#fff; border-bottom:1px solid #fff; }
-    [role="tabpanel"] { border:1px solid #e5e7eb; border-radius:0 8px 8px 8px; padding:12px; background:#fff; }
-    .actions { display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
-    .btn { padding:10px 14px; border-radius:8px; border:none; background:#0d6efd; color:#fff; cursor:pointer; }
-    .btn--danger { background:#dc2626; }
-    .btn--outline-danger { background:transparent; color:#dc2626; border:1px solid #dc2626; }
-    .skip { position:absolute; left:-9999px; }
-    .skip:focus { left:8px; top:8px; background:#fff; color:#000; padding:8px; z-index:10; }
-    .error-msg { color:#dc2626; font-size:.9rem; margin-top:4px; display:block; }
-    .input-error { border-color:#dc2626; outline:none; }
-    :root.high-contrast { filter: contrast(1.2) saturate(1.1); }
-    :root.reduced-motion * { transition:none !important; animation:none !important; }
-    .hint{font-size:.9rem;color:#6b7280}
-  </style>
+  <link rel="stylesheet" href="perfil.css" />
 </head>
 <body>
   <a class="skip" href="#main">Saltar al contenido</a>
 
-  <!-- Topbar -->
   <header class="topbar" role="banner">
     <div class="brand">
-      <img src="assets/img/logo.svg" alt="" aria-hidden="true" />
+      <img src="assets/img/logo.svg" alt="" aria-hidden="true" width="28" height="28" />
       <strong>MiTurnoSalud</strong>
     </div>
-    <nav aria-label="Principal">
-      <a href="index.html">Inicio</a>
+
+    <nav aria-label="Principal" class="topbar__nav">
+      <a href="dashboard.html">Dashboard</a>
       <a href="perfil.html" aria-current="page">Perfil</a>
-      <a href="#" id="btnLogout" title="Cerrar sesión">Cerrar sesión</a>
+      <a href="notificaciones.html">Notificaciones</a>
+
+      <!-- Botón modo Día/Noche -->
+      <button id="btnTheme" class="btn btn--ghost" type="button" aria-pressed="false" title="Cambiar tema">
+        🌞/🌙
+      </button>
+
+      <button id="btnLogout" class="btn btn--ghost" type="button">Cerrar sesión</button>
     </nav>
   </header>
 
@@ -65,45 +46,45 @@
     <section id="panel-general" role="tabpanel" aria-labelledby="tab-general">
       <form id="form-general" class="card" novalidate>
         <div class="row">
-          <div>
-            <label>Nombre para mostrar
-              <input type="text" name="displayName" placeholder="Ej: Ana Pérez" required />
-            </label>
+          <div class="field">
+            <label for="displayName">Nombre para mostrar</label>
+            <input id="displayName" name="displayName" type="text" placeholder="Ej: Ana Pérez" required />
             <small class="hint">Así verán tu nombre en recordatorios y turnos.</small>
           </div>
-          <div>
-            <label>Zona horaria
-              <select name="timeZone">
-                <option value="America/Argentina/Cordoba">America/Argentina/Cordoba</option>
-                <option value="America/Buenos_Aires">America/Buenos_Aires</option>
-              </select>
-            </label>
+
+          <div class="field">
+            <label for="timeZone">Zona horaria</label>
+            <select id="timeZone" name="timeZone">
+              <option value="America/Argentina/Cordoba">America/Argentina/Cordoba</option>
+              <option value="America/Buenos_Aires">America/Buenos_Aires</option>
+            </select>
           </div>
-          <div>
-            <label>Idioma
-              <select name="locale">
-                <option value="es">Español</option>
-                <option value="en">English</option>
-              </select>
-            </label>
+
+          <div class="field">
+            <label for="locale">Idioma</label>
+            <select id="locale" name="locale">
+              <option value="es">Español</option>
+              <option value="en">English</option>
+            </select>
           </div>
-          <div>
-            <label>Foto de perfil
-              <input type="file" name="avatar" accept="image/*" />
-            </label>
-            <img id="avatar" class="avatar" alt="Vista previa del avatar" />
+
+          <div class="field">
+            <label for="avatarInput">Foto de perfil</label>
+            <input id="avatarInput" name="avatar" type="file" accept="image/*" />
+            <div class="avatar-wrap">
+              <img id="avatarPreview" class="avatar" alt="Vista previa del avatar" />
+            </div>
           </div>
-          <div>
-            <label style="display:flex;align-items:center;gap:.5rem;">
-              <input type="checkbox" name="highContrast" /> Alto contraste
-            </label>
+
+          <div class="field checkbox">
+            <label><input id="highContrast" type="checkbox" /> Alto contraste</label>
           </div>
-          <div>
-            <label style="display:flex;align-items:center;gap:.5rem;">
-              <input type="checkbox" name="reducedMotion" /> Reducir movimiento
-            </label>
+
+          <div class="field checkbox">
+            <label><input id="reducedMotion" type="checkbox" /> Reducir movimiento</label>
           </div>
         </div>
+
         <div class="actions">
           <button type="submit" class="btn">Guardar</button>
         </div>
@@ -114,25 +95,21 @@
     <section id="panel-seguridad" role="tabpanel" aria-labelledby="tab-seguridad" hidden>
       <form id="form-seguridad" class="card" novalidate>
         <div class="row">
-          <div>
-            <label>Email actual
-              <input type="email" name="currentEmail" required />
-            </label>
+          <div class="field">
+            <label for="currentEmail">Email actual</label>
+            <input id="currentEmail" name="currentEmail" type="email" required />
           </div>
-          <div>
-            <label>Contraseña actual
-              <input type="password" name="currentPassword" required />
-            </label>
+          <div class="field">
+            <label for="currentPassword">Contraseña actual</label>
+            <input id="currentPassword" name="currentPassword" type="password" required />
           </div>
-          <div>
-            <label>Nuevo email
-              <input type="email" name="newEmail" placeholder="opcional" />
-            </label>
+          <div class="field">
+            <label for="newEmail">Nuevo email</label>
+            <input id="newEmail" name="newEmail" type="email" placeholder="opcional" />
           </div>
-          <div>
-            <label>Nueva contraseña
-              <input type="password" name="newPassword" minlength="8" placeholder="mín. 8 caracteres" />
-            </label>
+          <div class="field">
+            <label for="newPassword">Nueva contraseña</label>
+            <input id="newPassword" name="newPassword" type="password" minlength="8" placeholder="mín. 8 caracteres" />
           </div>
         </div>
         <p class="hint">Para cambios sensibles se requiere tu email y contraseña actuales (mock).</p>
@@ -146,19 +123,19 @@
     <section id="panel-notif" role="tabpanel" aria-labelledby="tab-notif" hidden>
       <form id="form-notif" class="card" novalidate>
         <div class="row">
-          <div>
-            <label>Canal preferido
-              <select name="channel">
-                <option value="email">Email</option>
-                <option value="sms">SMS</option>
-                <option value="whatsapp">WhatsApp</option>
-              </select>
-            </label>
+          <div class="field">
+            <label for="channel">Canal preferido</label>
+            <select id="channel" name="channel">
+              <option value="email">Email</option>
+              <option value="sms">SMS</option>
+              <option value="whatsapp">WhatsApp</option>
+            </select>
           </div>
-          <div>
-            <label>Horas antes del turno (recordatorio)
-              <input type="number" name="hoursBefore" min="1" max="168" value="24" />
-            </label>
+
+          <div class="field">
+            <label for="hoursBefore">Horas antes del turno</label>
+            <input id="hoursBefore" name="hoursBefore" type="number" min="1" max="168" value="24" />
+            <small class="hint">Entre 1 y 168.</small>
           </div>
         </div>
         <div class="actions">
@@ -170,13 +147,9 @@
     <!-- Panel: Privacidad -->
     <section id="panel-priv" role="tabpanel" aria-labelledby="tab-priv" hidden>
       <form id="form-priv" class="card" novalidate>
-        <div class="row">
-          <label style="display:flex;align-items:center;gap:.5rem;">
-            <input type="checkbox" name="marketingOptIn" /> Recibir comunicaciones de novedades
-          </label>
-          <label style="display:flex;align-items:center;gap:.5rem;">
-            <input type="checkbox" name="analyticsConsent" /> Permitir analíticas anónimas
-          </label>
+        <div class="row row--1">
+          <label class="checkbox"><input id="marketingOptIn" type="checkbox" /> Recibir comunicaciones de novedades</label>
+          <label class="checkbox"><input id="analyticsConsent" type="checkbox" /> Permitir analíticas anónimas</label>
         </div>
         <div class="actions">
           <button type="submit" class="btn">Guardar privacidad</button>
@@ -186,252 +159,9 @@
       </form>
     </section>
 
-    <!-- Toast -->
-    <div id="toast" role="status" aria-live="polite" class="card" style="position:fixed;right:16px;bottom:16px;display:none;"></div>
+    <div id="toast" role="status" aria-live="polite" class="toast" hidden></div>
   </main>
 
-  <script>
-    // ---------- Utilidades UI ----------
-    function toast(msg, ms = 2200) {
-      const t = document.getElementById("toast");
-      t.textContent = msg;
-      t.style.display = "block";
-      setTimeout(() => { t.style.display = "none"; t.textContent = ""; }, ms);
-    }
-    function download(url, filename) {
-      const a = document.createElement("a");
-      a.href = url; a.download = filename; document.body.appendChild(a);
-      a.click(); a.remove();
-    }
-    function setRootAccessibility({ highContrast, reducedMotion }) {
-      const root = document.documentElement;
-      root.classList.toggle("high-contrast", !!highContrast);
-      root.classList.toggle("reduced-motion", !!reducedMotion);
-    }
-    function showFieldError(input, text) {
-      const small = document.createElement("small");
-      small.className = "error-msg"; small.setAttribute("role", "alert");
-      small.textContent = text;
-      input.classList.add("input-error");
-      input.insertAdjacentElement("afterend", small);
-      input.focus();
-    }
-    function clearErrors(scope) {
-      scope.querySelectorAll(".error-msg").forEach(n => n.remove());
-      scope.querySelectorAll(".input-error").forEach(n => n.classList.remove("input-error"));
-    }
-
-    // ---------- API Mock (localStorage) ----------
-    const LS_PROFILE = "mts.user.profile";
-    const LS_SESSION = "mts.session";
-    const api = {
-      session() { return JSON.parse(localStorage.getItem(LS_SESSION) || "null"); },
-      ensureSessionOrRedirect() {
-        const s = api.session();
-        // Si no hay sesión, redirige silenciosamente al login y pasa "next"
-if (!s) {
-  const loginUrl = new URL("index.html", location.origin);
-  loginUrl.searchParams.set("next", location.pathname + location.search);
-  // usa replace para no dejar historial inválido
-  location.replace(loginUrl.toString());
-  return;
-}
-
-        return s;
-      },
-      profile() {
-        let raw = localStorage.getItem(LS_PROFILE);
-        if (!raw) {
-          const def = {
-            uid: "demo-uid",
-            email: "demo@miturnosalud.com",
-            displayName: "Paciente Demo",
-            timeZone: "America/Argentina/Cordoba",
-            locale: "es",
-            photoURL: "",
-            accessibility: { highContrast: false, reducedMotion: false },
-            notificationPrefs: { channel: "email", hoursBefore: 24 },
-            privacy: { marketingOptIn: false, analyticsConsent: false }
-          };
-          localStorage.setItem(LS_PROFILE, JSON.stringify(def));
-          raw = JSON.stringify(def);
-        }
-        return JSON.parse(raw);
-      },
-      save(patch) {
-        const next = { ...api.profile(), ...patch };
-        localStorage.setItem(LS_PROFILE, JSON.stringify(next));
-        return next;
-      },
-      updateSecurity({ currentEmail, currentPassword, newEmail, newPassword }) {
-        const prof = api.profile();
-        if (!currentEmail || !currentPassword) throw new Error("Credenciales actuales requeridas.");
-        if (currentEmail !== prof.email) throw new Error("El email actual no coincide.");
-        // Nota: contraseña no se persiste en este mock
-        if (newEmail) return api.save({ email: newEmail });
-        return prof;
-      },
-      export() {
-        const blob = new Blob([JSON.stringify(api.profile(), null, 2)], { type: "application/json" });
-        return URL.createObjectURL(blob);
-      },
-      deleteAccount() {
-        localStorage.removeItem(LS_PROFILE);
-        localStorage.removeItem(LS_SESSION);
-      }
-    };
-
-    // ---------- Tabs accesibles ----------
-    function setupTabs() {
-      const list = document.querySelector('[role="tablist"]');
-      const tabs = list.querySelectorAll('[role="tab"]');
-      tabs.forEach((tab, i) => {
-        tab.addEventListener("click", () => activateTab(tab, list));
-        tab.addEventListener("keydown", (e) => {
-          const idx = Array.from(tabs).indexOf(tab);
-          if (e.key === "ArrowRight") tabs[Math.min(idx + 1, tabs.length - 1)].focus();
-          if (e.key === "ArrowLeft") tabs[Math.max(idx - 1, 0)].focus();
-        });
-        if (i > 0) tab.setAttribute("tabindex", "-1");
-      });
-    }
-    function activateTab(tab, list) {
-      const tabs = list.querySelectorAll('[role="tab"]');
-      tabs.forEach(t => {
-        const selected = t === tab;
-        t.setAttribute("aria-selected", String(selected));
-        t.setAttribute("tabindex", selected ? "0" : "-1");
-        const panel = document.getElementById(t.getAttribute("aria-controls"));
-        if (panel) panel.hidden = !selected;
-      });
-    }
-
-    // ---------- Bootstrap de la página ----------
-    document.addEventListener("DOMContentLoaded", () => {
-      // Sesión
-      const s = api.ensureSessionOrRedirect();
-      // Nombre en topbar (opcional, usa session.email)
-      // ...
-
-      // Tabs
-      setupTabs();
-
-      // Cargar perfil
-      const profile = api.profile();
-      // Aplicar preferencias de accesibilidad
-      setRootAccessibility({
-        highContrast: !!profile.accessibility?.highContrast,
-        reducedMotion: !!profile.accessibility?.reducedMotion
-      });
-
-      // ---------- General ----------
-      const fGen = document.getElementById("form-general");
-      const avatarImg = document.getElementById("avatar");
-      fGen.displayName.value = profile.displayName || "";
-      fGen.timeZone.value = profile.timeZone || "America/Argentina/Cordoba";
-      fGen.locale.value = profile.locale || "es";
-      fGen.highContrast.checked = !!profile.accessibility?.highContrast;
-      fGen.reducedMotion.checked = !!profile.accessibility?.reducedMotion;
-      if (profile.photoURL) avatarImg.src = profile.photoURL;
-
-      fGen.avatar.addEventListener("change", (e) => {
-        const file = e.target.files?.[0];
-        if (!file) return;
-        const reader = new FileReader();
-        reader.onload = () => { avatarImg.src = reader.result; };
-        reader.readAsDataURL(file);
-      });
-
-      fGen.addEventListener("submit", (e) => {
-        e.preventDefault();
-        clearErrors(fGen);
-        if (!fGen.displayName.value.trim()) {
-          showFieldError(fGen.displayName, "El nombre es obligatorio.");
-          return;
-        }
-        const next = api.save({
-          displayName: fGen.displayName.value.trim(),
-          timeZone: fGen.timeZone.value,
-          locale: fGen.locale.value,
-          photoURL: avatarImg.src || "",
-          accessibility: {
-            highContrast: fGen.highContrast.checked,
-            reducedMotion: fGen.reducedMotion.checked
-          }
-        });
-        setRootAccessibility(next.accessibility || {});
-        toast("Perfil actualizado");
-      });
-
-      // ---------- Seguridad ----------
-      const fSec = document.getElementById("form-seguridad");
-      fSec.currentEmail.value = profile.email || s?.email || "";
-      fSec.addEventListener("submit", (e) => {
-        e.preventDefault();
-        clearErrors(fSec);
-        const payload = {
-          currentEmail: fSec.currentEmail.value.trim(),
-          currentPassword: fSec.currentPassword.value,
-          newEmail: fSec.newEmail.value.trim() || undefined,
-          newPassword: fSec.newPassword.value || undefined
-        };
-        try {
-          api.updateSecurity(payload); // mock
-          fSec.currentPassword.value = "";
-          fSec.newPassword.value = "";
-          toast("Seguridad actualizada (mock)");
-        } catch (err) {
-          showFieldError(fSec.currentEmail, (err && err.message) ? err.message : String(err));
-        }
-      });
-
-      // ---------- Notificaciones ----------
-      const fNot = document.getElementById("form-notif");
-      fNot.channel.value = profile.notificationPrefs?.channel || "email";
-      fNot.hoursBefore.value = profile.notificationPrefs?.hoursBefore ?? 24;
-      fNot.addEventListener("submit", (e) => {
-        e.preventDefault();
-        const hours = Math.max(1, Math.min(168, parseInt(fNot.hoursBefore.value || "24", 10)));
-        api.save({ notificationPrefs: { channel: fNot.channel.value, hoursBefore: hours } });
-        toast("Preferencias de notificación guardadas");
-      });
-
-      // ---------- Privacidad ----------
-      const fPriv = document.getElementById("form-priv");
-      fPriv.marketingOptIn.checked = !!profile.privacy?.marketingOptIn;
-      fPriv.analyticsConsent.checked = !!profile.privacy?.analyticsConsent;
-
-      fPriv.addEventListener("submit", (e) => {
-        e.preventDefault();
-        api.save({
-          privacy: {
-            marketingOptIn: fPriv.marketingOptIn.checked,
-            analyticsConsent: fPriv.analyticsConsent.checked
-          }
-        });
-        toast("Preferencias de privacidad guardadas");
-      });
-
-      document.getElementById("btnExport").addEventListener("click", () => {
-        const url = api.export();
-        download(url, "mi-perfil.json");
-      });
-
-      document.getElementById("btnDelete").addEventListener("click", () => {
-        if (!confirm("Esto eliminará tu cuenta y sesión en este dispositivo (mock). ¿Continuar?")) return;
-        api.deleteAccount();
-        toast("Cuenta eliminada");
-        setTimeout(() => location.href = "index.html", 800);
-      });
-
-      // ---------- Cerrar sesión ----------
-      document.getElementById("btnLogout").addEventListener("click", (e) => {
-        e.preventDefault();
-        localStorage.removeItem(LS_SESSION);
-        toast("Sesión cerrada");
-        setTimeout(() => location.href = "index.html", 300);
-      });
-    });
-  </script>
+  <script src="perfil.js" defer></script>
 </body>
 </html>
