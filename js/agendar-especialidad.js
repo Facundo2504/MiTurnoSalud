@@ -1,22 +1,20 @@
-/* agendar-especialidad.js – Paso 1 del flujo de turnos
-   - Valida especialidad seleccionada o escrita
-   - Guarda en MTS.Draft y avanza a agendar-medico.html
-   - Feedback accesible y bloqueo de envío duplicado
+/* agendar-especialidad.js – Paso 1 (versión final)
+   - Valida especialidad (contra datalist o dataset local)
+   - Guarda en localStorage como `especialidad` (clave consistente)
+   - Mergea con el draft previo (sin sobrescribir)
+   - Avanza a agendar-medico.html
 */
 document.addEventListener('DOMContentLoaded', () => {
-  try {
-    Auth.requireAuth();
-  } catch {
-    location.replace('index.html');
-    return;
-  }
+  // Guard de sesión
+  try { Auth?.requireAuth?.(); } catch { location.replace('index.html'); return; }
 
-  const data = MTS.Data();
-  const input = document.querySelector('#especialidad');
   const form  = document.querySelector('form.form');
-  const btnSubmit = form?.querySelector('button[type="submit"]');
+  const input = document.querySelector('#especialidad');
+  const btn   = form?.querySelector('button[type="submit"]');
 
-  // feedback accesible (crea si no existe)
+  if (!form || !input) return;
+
+  // Feedback accesible
   let feedback = form.querySelector('.form__feedback');
   if (!feedback) {
     feedback = document.createElement('p');
@@ -25,47 +23,63 @@ document.addEventListener('DOMContentLoaded', () => {
     form.appendChild(feedback);
   }
 
-  if (!form || !input) return;
+  // Fuente de verdad para validación: opciones del datalist (fallback a MTS.Data)
+  const datalistOptions = Array.from(document.querySelectorAll('#especialidades option'))
+    .map(o => (o.value || '').trim())
+    .filter(Boolean);
 
-  // limpiar error al escribir
+  const fallback = (typeof MTS?.Data === 'function' && Array.isArray(MTS.Data().specialties))
+    ? MTS.Data().specialties
+    : [];
+
+  const validList = (datalistOptions.length ? datalistOptions : fallback)
+    .map(s => s.toLowerCase());
+
+  // Limpia errores al tipear
   input.addEventListener('input', () => clearFeedback());
 
   form.addEventListener('submit', (e) => {
     e.preventDefault();
     clearFeedback();
 
-    const specialty = (input.value || '').trim();
-    const validSpecialties = data.specialties.map(s => s.toLowerCase());
-    if (!validSpecialties.includes(specialty.toLowerCase())) {
-      showFeedback('⚠️ Selecciona una especialidad válida del listado.', 'error');
-      input.classList.add('is-invalid');
-      input.focus();
+    const valor = (input.value || '').trim();
+    if (!validList.includes(valor.toLowerCase())) {
+      setError(input, '⚠️ Seleccioná una especialidad válida del listado.');
       return;
     }
 
-    // guardar en draft y avanzar
     lock(true);
-    MTS.Draft.set({ specialty });
-    showFeedback('✅ Especialidad guardada. Avanzando…', 'success');
+
+    // Merge seguro del borrador (SIN sobrescribir otras claves)
+    const prev = JSON.parse(localStorage.getItem('mts.draft') || '{}');
+    const next = { ...prev, especialidad: valor };
+    localStorage.setItem('mts.draft', JSON.stringify(next));
+
+    show('✅ Especialidad guardada. Avanzando…', 'success');
     setTimeout(() => location.assign('agendar-medico.html'), 600);
   });
 
-  /* ------------------ Helpers UI ------------------ */
-  function showFeedback(msg, type = 'info') {
+  /* ---------- Helpers UI ---------- */
+  function show(msg, type='info'){
     feedback.textContent = msg;
-    feedback.classList.remove('error', 'success');
+    feedback.classList.remove('error','success');
     feedback.classList.add(type);
   }
-
-  function clearFeedback() {
+  function clearFeedback(){
     feedback.textContent = '';
-    feedback.classList.remove('error', 'success');
+    feedback.classList.remove('error','success');
     input.classList.remove('is-invalid');
+    input.removeAttribute('aria-invalid');
   }
-
-  function lock(state) {
-    if (!btnSubmit) return;
-    btnSubmit.disabled = state;
-    btnSubmit.textContent = state ? 'Guardando…' : 'Continuar';
+  function setError(el, msg){
+    el.classList.add('is-invalid');
+    el.setAttribute('aria-invalid','true');
+    show(msg,'error');
+    el.focus();
+  }
+  function lock(state){
+    if (!btn) return;
+    btn.disabled = state;
+    btn.textContent = state ? 'Guardando…' : 'Siguiente — Elegir médico';
   }
 });
