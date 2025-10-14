@@ -1,14 +1,28 @@
-// perfil.js — Shell de Perfil con vistas externas
-// - Carga /perfil/<vista>.html según el hash (#/general, #/seguridad, …)
-// - Mantiene tab activo y foco accesible
-// - Guard de sesión y toggle de tema
+/* =========================================================
+   perfil.js — MiTurnoSalud (versión final)
+   - Guard de sesión con ?next=perfil.html
+   - Router por hash (#/general, #/seguridad, #/notificaciones, #/privacidad)
+   - Carga de vistas desde /perfil/*.html (fragmento o página completa)
+   - Tabs accesibles (aria-selected/tabindex) y foco gestionado
+   - Tema Día/Noche persistente en localStorage
+   - Toast global reutilizable
+   ========================================================= */
 
 const LS_SESSION = "mts.session";
 const LS_THEME   = "mts.theme";
 
-// ------- Bootstrap -------
+const ROUTES = new Map([
+  ["/general",        { tab: "tab-general",        file: "perfil/general.html",        title: "General" }],
+  ["/seguridad",      { tab: "tab-seguridad",      file: "perfil/seguridad.html",      title: "Seguridad" }],
+  ["/notificaciones", { tab: "tab-notificaciones", file: "perfil/notificaciones.html", title: "Notificaciones" }],
+  ["/privacidad",     { tab: "tab-privacidad",     file: "perfil/privacidad.html",     title: "Privacidad" }]
+]);
+
+// Cache simple en memoria para evitar recargas innecesarias
+const viewCache = new Map();
+
 document.addEventListener("DOMContentLoaded", () => {
-  // Guard de sesión
+  /* ---------- Guard de sesión ---------- */
   const session = JSON.parse(localStorage.getItem(LS_SESSION) || "null");
   if (!session) {
     const login = new URL("index.html", location.origin);
@@ -17,17 +31,17 @@ document.addEventListener("DOMContentLoaded", () => {
     return;
   }
 
-  // Tema persistente (oscuro por defecto)
+  /* ---------- Tema (día/noche) ---------- */
   const root = document.documentElement;
-  const savedTheme = localStorage.getItem(LS_THEME);
-  if (savedTheme === "light") root.setAttribute("data-theme", "light");
-
-  // Toggle tema
   const btnTheme = document.getElementById("btnTheme");
+  const savedTheme = localStorage.getItem(LS_THEME); // 'light' | 'dark' | null
+  if (savedTheme === "light") root.setAttribute("data-theme", "light");
+  if (savedTheme === "dark")  root.removeAttribute("data-theme"); // dark por defecto
+
   updateThemeButton();
-  btnTheme.addEventListener("click", () => {
+  btnTheme?.addEventListener("click", () => {
     if (root.getAttribute("data-theme") === "light") {
-      root.removeAttribute("data-theme"); // dark
+      root.removeAttribute("data-theme");     // -> dark
       localStorage.setItem(LS_THEME, "dark");
     } else {
       root.setAttribute("data-theme", "light");
@@ -37,57 +51,82 @@ document.addEventListener("DOMContentLoaded", () => {
   });
   function updateThemeButton() {
     const isLight = root.getAttribute("data-theme") === "light";
-    btnTheme.setAttribute("aria-pressed", String(isLight));
-    btnTheme.textContent = isLight ? "🌙 Noche" : "🌞 Día";
+    btnTheme?.setAttribute("aria-pressed", String(isLight));
+    if (btnTheme) btnTheme.textContent = isLight ? "🌙 Noche" : "🌞 Día";
   }
 
-  // Logout
+  /* ---------- Logout ---------- */
   document.getElementById("btnLogout")?.addEventListener("click", () => {
     localStorage.removeItem(LS_SESSION);
     location.href = "index.html";
   });
 
-  // Router inicial y listeners
+  /* ---------- Tabs (marcado accesible) ---------- */
+  const tablist = document.querySelector('[role="tablist"]');
+  const tabs = tablist?.querySelectorAll('[role="tab"]') || [];
+  tabs.forEach((tab, i) => {
+    // Navegación con teclado
+    tab.addEventListener("keydown", (e) => {
+      const arr = Array.from(tabs);
+      const idx = arr.indexOf(tab);
+      if (e.key === "ArrowRight") arr[Math.min(idx + 1, arr.length - 1)].focus();
+      if (e.key === "ArrowLeft")  arr[Math.max(idx - 1, 0)].focus();
+    });
+    // Asegura tabindex inicial
+    if (i > 0) tab.setAttribute("tabindex", "-1");
+  });
+
+  /* ---------- Router ---------- */
   if (!location.hash) location.replace("#/general");
   renderRoute();
   window.addEventListener("hashchange", renderRoute);
 
-  // Mejoras: focus al main después de cargar
-  document.getElementById("main").focus({ preventScroll: true });
+  // Accesibilidad: foco inicial al main
+  document.getElementById("main")?.focus({ preventScroll: true });
 });
 
-// ------- Router -------
-const ROUTES = new Map([
-  ["/general",        { tab: "tab-general",        file: "perfil/general.html",        title: "General" }],
-  ["/seguridad",      { tab: "tab-seguridad",      file: "perfil/seguridad.html",      title: "Seguridad" }],
-  ["/notificaciones", { tab: "tab-notificaciones", file: "perfil/notificaciones.html", title: "Notificaciones" }],
-  ["/privacidad",     { tab: "tab-privacidad",     file: "perfil/privacidad.html",     title: "Privacidad" }]
-]);
-
+/* =========================================================
+   Router principal
+   ========================================================= */
 async function renderRoute() {
   const view = document.getElementById("view");
-  const hash = location.hash.replace(/^#/, ""); // "#/general" -> "/general"
+  if (!view) return;
+
+  // Normaliza hash → "/general"
+  const hash = location.hash.replace(/^#/, "");
   const route = ROUTES.get(hash) || ROUTES.get("/general");
 
-  // Activar tab adecuado
+  // Activa el tab correspondiente
   setActiveTab(route.tab);
 
-  // Cargar vista
+  // UX: llevar el contenedor arriba (sin saltos bruscos)
+  try { view.scrollTo({ top: 0, behavior: "smooth" }); } catch {}
+
+  // Estado de carga
   view.setAttribute("aria-busy", "true");
   view.innerHTML = `<p class="hint">Cargando ${route.title}…</p>`;
-  view.scrollTo({ top: 0, behavior: "smooth" });
+
   try {
-    const html = await fetch(route.file, { cache: "no-cache" }).then(r => {
-      if (!r.ok) throw new Error(`No se pudo cargar ${route.file} (${r.status})`);
-      return r.text();
-    });
-    // Si es una página completa, extraer <body>; si es fragmento, usar tal cual
+    // Usa cache si existe
+    let html;
+    if (viewCache.has(route.file)) {
+      html = viewCache.get(route.file);
+    } else {
+      const resp = await fetch(route.file, { cache: "no-cache" });
+      if (!resp.ok) throw new Error(`No se pudo cargar ${route.file} (${resp.status})`);
+      html = await resp.text();
+      viewCache.set(route.file, html);
+    }
+
+    // Si es página completa, extrae solo <body> — si es fragmento, úsalo tal cual
     const fragment = extractBodyOrFragment(html);
     view.innerHTML = fragment;
 
-    // Auto-inicialización opcional: si la vista adjunta window.initPerfilView
+    // Hook de inicialización de la vista
     if (typeof window.initPerfilView === "function") {
-      try { window.initPerfilView(hash.slice(1)); } catch {}
+      // "#/general" → "general"
+      const viewName = (location.hash.replace(/^#\//, "") || "general");
+      try { window.initPerfilView(viewName); } catch (e) { console.warn("initPerfilView error:", e); }
     }
   } catch (err) {
     console.error(err);
@@ -99,13 +138,17 @@ async function renderRoute() {
       </div>`;
   } finally {
     view.setAttribute("aria-busy", "false");
-    // Mover foco al título principal de la vista si existe
+
+    // Gestión de foco accesible al primer título del panel
     const firstHeading = view.querySelector("h1, h2, [role='heading']");
+    if (firstHeading) firstHeading.tabIndex = -1;
     (firstHeading || view).focus?.({ preventScroll: true });
-    
   }
 }
 
+/* =========================================================
+   Utilidades
+   ========================================================= */
 function setActiveTab(tabId) {
   document.querySelectorAll('[role="tab"]').forEach((el) => {
     const active = el.id === tabId;
@@ -115,17 +158,29 @@ function setActiveTab(tabId) {
 }
 
 function extractBodyOrFragment(html) {
-  // Si el HTML contiene <body>, capturar su contenido; si no, devolver tal cual (fragmento)
+  // Detecta <body> y devuelve su innerHTML; si no, retorna el fragmento tal cual
   const hasBody = /<body[\s\S]*<\/body>/i.test(html);
   if (!hasBody) return html;
   const m = html.match(/<body[^>]*>([\s\S]*)<\/body>/i);
   return m ? m[1] : html;
 }
 
-// ------- Utils opcionales -------
-function toast(msg, ms = 2000) {
-  const t = document.getElementById("toast");
+// Toast global reutilizable (usa .toast del DOM si existe; si no, crea uno)
+window.toast = function toast(msg, ms = 2000) {
+  let t = document.getElementById("toast");
+  if (!t) {
+    t = document.createElement("div");
+    t.id = "toast";
+    t.className = "toast";
+    document.body.appendChild(t);
+  }
   t.textContent = msg;
   t.classList.remove("hidden");
-  setTimeout(() => { t.classList.add("hidden"); t.textContent = ""; }, ms);
-}
+  // Si hay clase .visible en estilos globales, también la aplicamos
+  t.classList.add("visible");
+  setTimeout(() => {
+    t.classList.add("hidden");
+    t.classList.remove("visible");
+    t.textContent = "";
+  }, ms);
+};
