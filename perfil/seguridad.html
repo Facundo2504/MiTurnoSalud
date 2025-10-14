@@ -1,0 +1,75 @@
+<!-- Fragmento: perfil/seguridad.html -->
+<section aria-labelledby="perfil-seguridad">
+  <h2 id="perfil-seguridad">Seguridad</h2>
+  <p class="hint">Para cambios sensibles se requiere tu email y contraseña actuales (mock local).</p>
+
+  <form id="form-seguridad" class="card" novalidate>
+    <div class="row">
+      <div class="field">
+        <label for="currentEmail">Email actual</label>
+        <input id="currentEmail" type="email" required />
+      </div>
+      <div class="field">
+        <label for="currentPassword">Contraseña actual</label>
+        <input id="currentPassword" type="password" required />
+      </div>
+      <div class="field">
+        <label for="newEmail">Nuevo email</label>
+        <input id="newEmail" type="email" placeholder="opcional" />
+      </div>
+      <div class="field">
+        <label for="newPassword">Nueva contraseña</label>
+        <input id="newPassword" type="password" minlength="8" placeholder="mín. 8 caracteres" />
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn">Actualizar seguridad</button>
+    </div>
+  </form>
+</section>
+
+<script>
+window.initPerfilView = function(view){
+  if(view !== "seguridad") return;
+
+  const LS_PROFILE = "mts.user.profile";
+  const profile = JSON.parse(localStorage.getItem(LS_PROFILE) || "{}");
+
+  const f = document.getElementById("form-seguridad");
+  const currentEmail = document.getElementById("currentEmail");
+  const currentPassword = document.getElementById("currentPassword");
+  const newEmail = document.getElementById("newEmail");
+  const newPassword = document.getElementById("newPassword");
+
+  currentEmail.value = profile.email || "";
+
+  f.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    // validaciones simples
+    if(!currentEmail.value.trim() || !currentPassword.value){
+      (window.toast||alert)("Completa email y contraseña actuales.");
+      return;
+    }
+    if(newEmail.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail.value)){
+      (window.toast||alert)("Nuevo email inválido.");
+      return;
+    }
+    if(newPassword.value && newPassword.value.length < 8){
+      (window.toast||alert)("La nueva contraseña debe tener al menos 8 caracteres.");
+      return;
+    }
+
+    // mock: sólo guardamos el nuevo email en el perfil
+    if(newEmail.value){
+      profile.email = newEmail.value.trim();
+      localStorage.setItem(LS_PROFILE, JSON.stringify(profile));
+    }
+
+    currentPassword.value = "";
+    newPassword.value = "";
+    (window.toast||alert)("Seguridad actualizada (mock).");
+  });
+};
+</script>

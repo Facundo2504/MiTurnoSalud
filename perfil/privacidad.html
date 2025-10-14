@@ -1,0 +1,83 @@
+<!-- Fragmento: perfil/notificaciones.html -->
+<section aria-labelledby="perfil-notificaciones">
+  <h2 id="perfil-notificaciones">Notificaciones</h2>
+  <p class="hint">Elegí cómo y cuándo querés recibir recordatorios de turnos.</p>
+
+  <form id="form-notif" class="card" novalidate>
+    <div class="row">
+      <div class="field">
+        <label for="channel">Canal preferido</label>
+        <select id="channel">
+          <option value="email">Email</option>
+          <option value="sms">SMS</option>
+          <option value="whatsapp">WhatsApp</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="hoursBefore">Horas antes del turno</label>
+        <input id="hoursBefore" type="number" min="1" max="168" value="24" />
+        <small class="hint">Entre 1 y 168 (1 semana).</small>
+      </div>
+
+      <div class="field">
+        <label for="quietFrom">Horario silencioso (desde)</label>
+        <input id="quietFrom" type="time" value="22:00" />
+      </div>
+
+      <div class="field">
+        <label for="quietTo">Horario silencioso (hasta)</label>
+        <input id="quietTo" type="time" value="07:00" />
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn">Guardar preferencias</button>
+    </div>
+  </form>
+</section>
+
+<script>
+window.initPerfilView = function(view){
+  if(view !== "notificaciones") return;
+
+  const LS_PROFILE = "mts.user.profile";
+  const profile = JSON.parse(localStorage.getItem(LS_PROFILE) || "{}");
+  profile.notificationPrefs = profile.notificationPrefs || { channel:"email", hoursBefore:24, quietFrom:"22:00", quietTo:"07:00" };
+
+  const f = document.getElementById("form-notif");
+  const channel = document.getElementById("channel");
+  const hoursBefore = document.getElementById("hoursBefore");
+  const quietFrom = document.getElementById("quietFrom");
+  const quietTo = document.getElementById("quietTo");
+
+  // preload
+  channel.value = profile.notificationPrefs.channel || "email";
+  hoursBefore.value = profile.notificationPrefs.hoursBefore ?? 24;
+  quietFrom.value = profile.notificationPrefs.quietFrom || "22:00";
+  quietTo.value = profile.notificationPrefs.quietTo || "07:00";
+
+  f.addEventListener("submit", (e) => {
+    e.preventDefault();
+
+    const hb = parseInt(hoursBefore.value || "24", 10);
+    if(Number.isNaN(hb) || hb < 1 || hb > 168){
+      (window.toast||alert)("Las horas deben estar entre 1 y 168.");
+      return;
+    }
+    if(!/^\d{2}:\d{2}$/.test(quietFrom.value) || !/^\d{2}:\d{2}$/.test(quietTo.value)){
+      (window.toast||alert)("Formato de horario inválido. Usa HH:mm.");
+      return;
+    }
+
+    profile.notificationPrefs = {
+      channel: channel.value,
+      hoursBefore: hb,
+      quietFrom: quietFrom.value,
+      quietTo: quietTo.value
+    };
+    localStorage.setItem(LS_PROFILE, JSON.stringify(profile));
+    (window.toast||alert)("Preferencias de notificación guardadas ✅");
+  });
+};
+</script>

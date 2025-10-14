@@ -1,0 +1,111 @@
+<!-- Fragmento: perfil/general.html -->
+<section aria-labelledby="perfil-general">
+  <h2 id="perfil-general">Información general</h2>
+  <p class="hint">
+    Aquí podés actualizar tu nombre, idioma, zona horaria y preferencias de accesibilidad.
+  </p>
+
+  <form id="form-general" class="card" novalidate>
+    <div class="row">
+      <div class="field">
+        <label for="displayName">Nombre para mostrar</label>
+        <input id="displayName" name="displayName" type="text" placeholder="Ej: Ana Pérez" required />
+        <small class="hint">Así verán tu nombre en recordatorios y turnos.</small>
+      </div>
+
+      <div class="field">
+        <label for="timeZone">Zona horaria</label>
+        <select id="timeZone" name="timeZone">
+          <option value="America/Argentina/Cordoba">America/Argentina/Cordoba</option>
+          <option value="America/Buenos_Aires">America/Buenos_Aires</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="locale">Idioma</label>
+        <select id="locale" name="locale">
+          <option value="es">Español</option>
+          <option value="en">English</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="avatarInput">Foto de perfil</label>
+        <input id="avatarInput" name="avatar" type="file" accept="image/*" />
+        <div class="avatar-wrap">
+          <img id="avatarPreview" class="avatar" alt="Vista previa del avatar" />
+        </div>
+      </div>
+
+      <div class="field checkbox">
+        <label><input id="highContrast" type="checkbox" /> Alto contraste</label>
+      </div>
+
+      <div class="field checkbox">
+        <label><input id="reducedMotion" type="checkbox" /> Reducir movimiento</label>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button type="submit" class="btn">Guardar</button>
+    </div>
+  </form>
+</section>
+
+<script>
+window.initPerfilView = function (view) {
+  // Solo corre si esta vista fue cargada
+  if (view !== "general") return;
+
+  const LS_PROFILE = "mts.user.profile";
+  const profile = JSON.parse(localStorage.getItem(LS_PROFILE) || "{}");
+
+  const form = document.getElementById("form-general");
+  const displayName = document.getElementById("displayName");
+  const timeZone = document.getElementById("timeZone");
+  const locale = document.getElementById("locale");
+  const avatarInput = document.getElementById("avatarInput");
+  const avatarPreview = document.getElementById("avatarPreview");
+  const highContrast = document.getElementById("highContrast");
+  const reducedMotion = document.getElementById("reducedMotion");
+
+  // Prellenar campos
+  displayName.value = profile.displayName || "";
+  timeZone.value = profile.timeZone || "America/Argentina/Cordoba";
+  locale.value = profile.locale || "es";
+  if (profile.photoURL) avatarPreview.src = profile.photoURL;
+  highContrast.checked = !!profile.accessibility?.highContrast;
+  reducedMotion.checked = !!profile.accessibility?.reducedMotion;
+
+  avatarInput.addEventListener("change", e => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = () => (avatarPreview.src = reader.result);
+    reader.readAsDataURL(file);
+  });
+
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    if (!displayName.value.trim()) return alert("El nombre es obligatorio.");
+
+    const updated = {
+      ...profile,
+      displayName: displayName.value.trim(),
+      timeZone: timeZone.value,
+      locale: locale.value,
+      photoURL: avatarPreview.src || "",
+      accessibility: {
+        highContrast: highContrast.checked,
+        reducedMotion: reducedMotion.checked
+      }
+    };
+
+    localStorage.setItem(LS_PROFILE, JSON.stringify(updated));
+    document.documentElement.classList.toggle("high-contrast", highContrast.checked);
+    document.documentElement.classList.toggle("reduced-motion", reducedMotion.checked);
+
+    alert("✅ Perfil actualizado correctamente.");
+  });
+};
+</script>
