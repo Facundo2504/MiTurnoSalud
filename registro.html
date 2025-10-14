@@ -23,7 +23,7 @@
     <h1>Registrarse</h1>
     <p class="muted">Registro de paciente</p>
 
-    <form class="form" action="#" method="post" novalidate>
+    <form id="formRegistro" class="form" novalidate>
       <div class="form__row">
         <div class="form__group">
           <label for="nombre">Nombre</label>
@@ -38,25 +38,30 @@
       <div class="form__group">
         <label for="email">Correo electrónico</label>
         <input id="email" name="email" type="email" required autocomplete="email"
-               inputmode="email" autocapitalize="off" spellcheck="false"
                placeholder="tu@correo.com">
       </div>
 
       <div class="form__row">
         <div class="form__group">
           <label for="obraSocial">Obra social</label>
-          <input id="obraSocial" name="obraSocial" type="text" list="obras"
-                 autocomplete="organization">
+          <input id="obraSocial" name="obraSocial" type="text" list="obras" autocomplete="organization">
           <datalist id="obras">
             <option value="OSDE">
             <option value="Swiss Medical">
             <option value="Galeno">
+            <option value="Medifé">
+            <option value="Omint">
+            <option value="Sancor Salud">
+            <option value="PAMI">
+            <option value="Otra">
+            
+
           </datalist>
         </div>
 
         <div class="form__group">
           <label for="telefono">Teléfono</label>
-          <input id="telefono" name="telefono" type="tel" inputmode="tel" autocomplete="tel"
+          <input id="telefono" name="telefono" type="tel" inputmode="tel"
                  pattern="[0-9+\-() ]{6,}" placeholder="Ej: 3493-416732">
         </div>
       </div>
@@ -70,18 +75,11 @@
       <button class="btn btn--primary" type="submit">Registrarse</button>
 
       <p class="form__help">
-        <a href="recuperar.html">¿Olvidaste tu Contraseña?</a>
-      </p>
-
-      <p class="form__help">
         ¿Ya tienes cuenta? <a href="index.html">Inicia sesión</a>
       </p>
     </form>
   </main>
 
-  <!-- Scripts -->
-  <script src="js/app.js" defer></script>
-  <script src="js/auth.js" defer></script>
   <script src="js/registro.js" defer></script>
 </body>
 </html>

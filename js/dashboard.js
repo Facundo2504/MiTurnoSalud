@@ -1,103 +1,111 @@
-/* dashboard.js – Panel principal de MiTurnoSalud
-   Funcionalidades:
-   - Listar turnos del usuario actual en orden cronológico
-   - Cancelar turno con confirmación
-   - Simular recordatorio
-   - Actualización dinámica accesible
-*/
-document.addEventListener('DOMContentLoaded', () => {
-  try {
-    Auth.requireAuth();
-  } catch {
-    location.replace('index.html');
+// js/dashboard.js — versión final
+// Controla acceso, renderiza próximos turnos y maneja recordatorios (mock)
+
+const LS_SESSION = "mts.session";
+const LS_TURNOS = "mts.turnos";
+const LS_PROFILE = "mts.user.profile";
+
+// Espera a que el DOM esté listo
+document.addEventListener("DOMContentLoaded", () => {
+  // Guard de sesión
+  const session = JSON.parse(localStorage.getItem(LS_SESSION) || "null");
+  if (!session) {
+    const login = new URL("index.html", location.origin);
+    login.searchParams.set("next", "dashboard.html");
+    location.replace(login.toString());
     return;
   }
 
-  const user = Auth.currentUser();
-  const listContainer = document.querySelector('.cards');
-  const btnRecordatorio = document.querySelector('#btnRecordatorio');
-  const liveRegion = document.createElement('div');
-  liveRegion.className = 'sr-only';
-  liveRegion.setAttribute('aria-live', 'polite');
-  document.body.appendChild(liveRegion);
+  // Logout handler
+  window.Auth = {
+    logout() {
+      localStorage.removeItem(LS_SESSION);
+      location.href = "index.html";
+    },
+  };
 
-  if (!listContainer || !user) return;
-
-  const { formatDateAR, formatTimeHHMM } = MTS;
-
-  /* ---------- Render inicial ---------- */
-  renderAppointments();
-
-  /* ---------- Recordatorio (simulado) ---------- */
-  btnRecordatorio?.addEventListener('click', () => {
-    const appts = MTS.Appointments.upcoming({ userEmail: user.email });
-    if (!appts.length) {
-      alert('No tienes turnos próximos.');
-      return;
-    }
-
-    const msg = `📅 Se envió recordatorio para ${appts.length} turno${appts.length > 1 ? 's' : ''}.`;
-    alert(msg);
-    liveRegion.textContent = msg;
-  });
-
-  /* ---------- Delegación: Cancelar turno ---------- */
-  document.addEventListener('click', (e) => {
-    const btn = e.target.closest('.js-cancel');
-    if (!btn) return;
-
-    const card = btn.closest('.card');
-    const id = card?.dataset.id;
-    if (!id) return;
-
-    const appt = MTS.Appointments.list().find(a => a.id === id);
-    if (!appt) return;
-
-    const confirmMsg = `¿Seguro que deseas cancelar el turno de ${appt.specialty} con ${appt.doctor} (${formatDateAR(appt.date)} ${appt.time})?`;
-    if (!confirm(confirmMsg)) return;
-
-    // Animación antes de eliminar
-    card.style.opacity = '0.6';
-    card.style.transform = 'scale(0.98)';
-    setTimeout(() => {
-      MTS.Appointments.removeById(id);
-      liveRegion.textContent = 'Turno cancelado correctamente.';
-      renderAppointments();
-    }, 250);
-  });
-
-  /* ---------- Render de turnos ---------- */
-  function renderAppointments() {
-    const appts = MTS.Appointments.upcoming({ userEmail: user.email });
-
-    if (!appts.length) {
-      listContainer.innerHTML = `
-        <div class="empty">
-          <p class="muted">Aún no tienes turnos agendados.</p>
-          <a href="agendar-especialidad.html" class="btn btn--primary mt-2">Agendar un turno</a>
-        </div>
-      `;
-      return;
-    }
-
-    listContainer.innerHTML = appts.map(appt => `
-      <article class="card card--turno" data-id="${appt.id}">
-        <header class="card__header">
-          <div aria-hidden="true">📅</div>
-          <p class="card__subtitle">${formatDateAR(appt.date)}, ${formatTimeHHMM(appt.time)}</p>
-        </header>
-        <div class="card__body">
-          <div class="card__title">${appt.specialty} — ${appt.doctor}</div>
-          <p class="muted">${appt.institution?.name ?? ''}</p>
-          <p class="muted">${appt.institution?.address ?? ''}</p>
-        </div>
-        <footer class="card__footer">
-          <button class="btn btn--ghost js-cancel">Cancelar turno</button>
-        </footer>
-      </article>
-    `).join('');
-
-    // A11y: anunciar la actualización de lista
-    liveRegion.textContent = `Lista actualizada: ${appts.length} turno${appts.length > 1 ? 's' : ''} en total.`;
+  // Mostrar perfil básico (si existe)
+  const profile = JSON.parse(localStorage.getItem(LS_PROFILE) || "{}");
+  const saludo = document.querySelector("h1");
+  if (profile.displayName) {
+    saludo.textContent = `Hola, ${profile.displayName.split(" ")[0]} 👋`;
   }
+
+  // Inicializar contenedor de turnos
+  const contenedor = document.querySelector(".cards");
+  if (!contenedor) return;
+
+  // Cargar turnos simulados si no hay
+  let turnos = JSON.parse(localStorage.getItem(LS_TURNOS) || "[]");
+  if (turnos.length === 0) {
+    turnos = [
+      {
+        id: 1,
+        fecha: "2025-10-20T09:00:00",
+        medico: "Dra. Pérez (Clínica Médica)",
+        estado: "Confirmado",
+      },
+      {
+        id: 2,
+        fecha: "2025-11-02T14:30:00",
+        medico: "Dr. López (Cardiología)",
+        estado: "Pendiente",
+      },
+    ];
+    localStorage.setItem(LS_TURNOS, JSON.stringify(turnos));
+  }
+
+  // Renderizar tarjetas
+  renderTurnos(turnos, contenedor);
+
+  // Botón “Enviar recordatorio”
+  document
+    .getElementById("btnRecordatorio")
+    ?.addEventListener("click", () => {
+      if (turnos.length === 0) {
+        toast("No hay turnos para recordar.");
+        return;
+      }
+      toast(`📅 Se enviaron recordatorios para ${turnos.length} turno(s).`);
+    });
 });
+
+// Render de turnos
+function renderTurnos(turnos, contenedor) {
+  if (turnos.length === 0) {
+    contenedor.innerHTML = `<p class="hint">No tenés turnos próximos. <a href="agendar-especialidad.html">Agendar uno</a>.</p>`;
+    return;
+  }
+
+  contenedor.innerHTML = turnos
+    .map(
+      (t) => `
+    <article class="card turno">
+      <h3>${new Date(t.fecha).toLocaleDateString("es-AR", {
+        weekday: "long",
+        month: "long",
+        day: "numeric",
+      })}</h3>
+      <p><strong>Médico:</strong> ${t.medico}</p>
+      <p><strong>Estado:</strong> ${t.estado}</p>
+    </article>`
+    )
+    .join("");
+}
+
+// Mini toast reutilizable
+function toast(msg, ms = 2000) {
+  let t = document.getElementById("toast");
+  if (!t) {
+    t = document.createElement("div");
+    t.id = "toast";
+    t.className = "toast";
+    document.body.appendChild(t);
+  }
+  t.textContent = msg;
+  t.classList.remove("hidden");
+  setTimeout(() => {
+    t.classList.add("hidden");
+    t.textContent = "";
+  }, ms);
+}
