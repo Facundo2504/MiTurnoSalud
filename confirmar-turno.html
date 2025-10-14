@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Header -->
   <header class="site-header" role="banner">
     <div class="site-header__brand">
       <a href="dashboard.html" class="brand__link">
@@ -20,9 +19,7 @@
     </div>
   </header>
 
-  <!-- Layout principal -->
   <div class="layout">
-    <!-- Sidebar -->
     <aside class="sidebar" aria-label="Navegación secundaria">
       <nav role="navigation">
         <ul role="list">
@@ -33,44 +30,48 @@
               <li><a href="agendar-especialidad.html">Agendar Turno</a></li>
             </ul>
           </li>
-          <li><a href="#">Perfil</a></li>
-          <li><a href="#">Notificaciones</a></li>
+          <li><a href="perfil.html">Perfil</a></li>
+          <li><a href="notificaciones.html">Notificaciones</a></li>
         </ul>
       </nav>
     </aside>
 
-    <!-- Contenido principal -->
     <main class="content">
       <h1>Confirmar Turno</h1>
 
       <section class="panel">
-        <p class="muted">Revisa cuidadosamente los datos de tu turno antes de confirmar.</p>
+        <p class="muted">Revisá los datos de tu turno antes de finalizar.</p>
 
-        <!-- Resumen -->
-        <dl class="definition" aria-live="polite">
-          <!-- Aquí el JS insertará los datos del turno -->
-        </dl>
+        <dl class="definition" aria-live="polite"></dl>
 
-        <!-- Observaciones -->
-        <form class="form" id="form-observaciones" action="#" method="post" novalidate>
+        <form class="form" id="form-observaciones" novalidate>
           <div class="form__group">
             <label for="notes">Observaciones (opcional)</label>
             <input id="notes" name="notes" type="text" placeholder="Ej: prefiero turno por la tarde">
           </div>
         </form>
 
-        <!-- Acciones -->
         <div class="actions">
-          <!-- JS añadirá botones: Llamar, WhatsApp, Google Calendar -->
           <a href="dashboard.html" class="btn btn--primary">Volver al inicio</a>
         </div>
       </section>
     </main>
   </div>
 
-  <!-- Scripts -->
-  <script src="js/app.js" defer></script>
-  <script src="js/auth.js" defer></script>
+  <!-- Mock mínimo -->
+  <script>
+    const Auth = {
+      requireAuth(){
+        const s = JSON.parse(localStorage.getItem("mts.session") || "null");
+        if(!s){
+          const login = new URL("index.html", location.origin);
+          login.searchParams.set("next", "confirmar-turno.html");
+          location.replace(login.toString());
+        }
+      }
+    };
+  </script>
+
   <script src="js/confirmar-turno.js" defer></script>
 </body>
 </html>

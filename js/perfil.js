@@ -75,6 +75,7 @@ async function renderRoute() {
   // Cargar vista
   view.setAttribute("aria-busy", "true");
   view.innerHTML = `<p class="hint">Cargando ${route.title}…</p>`;
+  view.scrollTo({ top: 0, behavior: "smooth" });
   try {
     const html = await fetch(route.file, { cache: "no-cache" }).then(r => {
       if (!r.ok) throw new Error(`No se pudo cargar ${route.file} (${r.status})`);
@@ -100,7 +101,8 @@ async function renderRoute() {
     view.setAttribute("aria-busy", "false");
     // Mover foco al título principal de la vista si existe
     const firstHeading = view.querySelector("h1, h2, [role='heading']");
-    (firstHeading || view).focus?.();
+    (firstHeading || view).focus?.({ preventScroll: true });
+    
   }
 }
 

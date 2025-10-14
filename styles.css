@@ -719,6 +719,226 @@ select { min-height: 46px; }
 }
 .card--option h3 { margin: 0; color: var(--text-strong); }
 .card--option p { margin: 0; color: var(--muted); font-size: .9rem; }
+/* ====================== */
+/* CONFIRMAR TURNO (UX/estética) */
+/* ====================== */
+
+/* Bloque general de resumen */
+.definition {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: var(--space-5);
+  box-shadow: var(--shadow-1);
+}
+
+/* Filas individuales */
+.definition__row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: .75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: var(--panel-2);
+  transition: background .15s ease-in-out;
+}
+.definition__row:hover {
+  background: color-mix(in oklab, var(--panel-2) 60%, var(--brand-500) 3%);
+}
+
+.definition dt {
+  font-weight: 700;
+  color: var(--text-strong);
+}
+.definition dd {
+  margin: 0;
+  color: var(--text);
+  text-align: right;
+}
+
+/* Botones de acción */
+.actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1.5rem;
+}
+
+.actions .btn--ghost {
+  border-color: var(--border);
+  color: var(--brand-600);
+  background: var(--panel);
+}
+.actions .btn--primary {
+  background: var(--brand-500);
+  color: #fff;
+  border: none;
+}
+.actions .btn--primary:hover {
+  background: var(--brand-600);
+  transform: translateY(-1px);
+}
+
+.actions .btn--ghost:hover {
+  background: var(--panel-2);
+  transform: translateY(-1px);
+}
+
+/* Confirmar turno – feedback visual */
+.form__feedback.success {
+  color: var(--success);
+  font-weight: 700;
+  margin-top: 1rem;
+  text-align: center;
+}
+.form__feedback.error {
+  color: var(--danger);
+  font-weight: 700;
+  margin-top: 1rem;
+  text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 600px) {
+  .definition__row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .35rem;
+  }
+  .definition dd { text-align: left; }
+}
+
+/* ============================= */
+/* PANEL DE NOTIFICACIONES       */
+/* ============================= */
+
+#main h1 {
+  margin-bottom: 0.5rem;
+}
+
+.panel h2 {
+  font-size: 1.25rem;
+  color: var(--text-strong);
+  margin-bottom: 0.5rem;
+}
+
+/* Formularios y layout del panel */
+.grid.grid--3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.form__group select,
+.form__group input[type="number"],
+.form__group input[type="time"],
+.form__group input[type="text"] {
+  width: 100%;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0.5rem 0.75rem;
+  background: var(--panel);
+  color: var(--text);
+  transition: border-color 0.15s ease;
+}
+
+.form__group select:focus,
+.form__group input:focus {
+  outline: none;
+  border-color: var(--brand-500);
+}
+
+/* Estados de error */
+.is-invalid {
+  border-color: var(--danger);
+  background: color-mix(in srgb, var(--danger) 10%, var(--panel));
+}
+.field-error {
+  color: var(--danger);
+  font-size: 0.875rem;
+  margin-top: 0.25rem;
+}
+
+/* Historial de envíos simulados */
+#history {
+  display: grid;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+#history .card {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: var(--panel-2);
+  padding: 1rem;
+  box-shadow: var(--shadow-1);
+  transition: background 0.15s ease;
+}
+#history .card:hover {
+  background: color-mix(in oklab, var(--panel-2) 85%, var(--brand-500) 3%);
+}
+#history strong {
+  color: var(--text-strong);
+}
+#history .hint {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+/* Botones */
+.actions {
+  display: flex;
+  justify-content: flex-start;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  margin-top: 1rem;
+}
+.btn--danger {
+  background: var(--danger);
+  color: #fff;
+  border: none;
+}
+.btn--danger:hover {
+  background: color-mix(in srgb, var(--danger) 85%, black 5%);
+}
+
+/* Toast de feedback */
+.toast {
+  position: fixed;
+  bottom: 1.25rem;
+  right: 1.25rem;
+  background: var(--brand-600);
+  color: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 8px;
+  box-shadow: var(--shadow-2);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease-in-out;
+  font-weight: 600;
+  z-index: 9999;
+}
+.toast.visible {
+  opacity: 1;
+  pointer-events: all;
+}
+
+/* Adaptación móvil */
+@media (max-width: 600px) {
+  .grid.grid--3 {
+    grid-template-columns: 1fr;
+  }
+  .actions {
+    justify-content: center;
+  }
+  .toast {
+    left: 50%;
+    transform: translateX(-50%);
+    right: auto;
+  }
+}
+
 
 
 /* =========================================================

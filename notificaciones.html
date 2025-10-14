@@ -7,113 +7,93 @@
   <title>Notificaciones — MiTurnoSalud</title>
   <link rel="icon" href="assets/img/logo.svg" />
   <link rel="stylesheet" href="styles.css" />
-  <style>
-    /* realces mínimos (usa tu styles.css principal) */
-    .wrap { max-width: 1100px; margin: 0 auto; padding: 16px; }
-    .topbar { display:flex; justify-content:space-between; align-items:center; padding:12px 16px; background:#0d6efd; color:#fff; }
-    .topbar a, .topbar button { color:#fff; text-decoration:none; margin-left:12px; }
-    .row { display:grid; grid-template-columns: repeat(3, minmax(220px, 1fr)); gap: 16px 20px; }
-    @media (max-width: 980px){ .row { grid-template-columns: repeat(2, minmax(220px,1fr)); } }
-    @media (max-width: 640px){ .row { grid-template-columns: 1fr; } }
-    .card { border:1px solid var(--border, #e5e7eb); border-radius:10px; padding:16px; background:var(--panel, #fff); }
-    .actions { display:flex; gap:8px; justify-content:flex-end; margin-top:12px; }
-    .btn { padding: 12px 16px; border-radius: 10px; border: none; background: #2563eb; color: #fff; font-weight: 600; cursor: pointer; }
-    .btn--ghost { background: transparent; border:1px solid rgba(255,255,255,.6); }
-    .btn--danger { background: #dc2626; }
-    .hint { color: var(--muted, #6b7280); font-size: .92rem; }
-    .field-error { color:#dc2626; font-size:.9rem; margin-top:4px; display:block; }
-    .is-invalid { border-color:#dc2626 !important; outline: none; }
-    #toast { position:fixed; right:16px; bottom:16px; display:none; padding:10px 12px; border-radius:8px; background:#111827; color:#fff; }
-  </style>
 </head>
 <body>
   <a class="skip" href="#main">Saltar al contenido</a>
 
-  <header class="topbar" role="banner">
-    <div style="display:flex;align-items:center;gap:.5rem;">
-      <img src="assets/img/logo.svg" alt="" aria-hidden="true" width="28" height="28" />
-      <strong>MiTurnoSalud</strong>
+  <header class="site-header" role="banner">
+    <div class="site-header__brand">
+      <a href="dashboard.html" class="brand__link">
+        <img src="assets/img/logo.svg" alt="" aria-hidden="true" class="brand__logo">
+        <span class="brand__name">MiTurnoSalud</span>
+      </a>
     </div>
     <nav aria-label="Principal">
-      <a href="dashboard.html">Dashboard</a>
+      <a href="dashboard.html">Inicio</a>
       <a href="perfil.html">Perfil</a>
       <a href="notificaciones.html" aria-current="page">Notificaciones</a>
       <button id="btnLogout" class="btn btn--ghost">Cerrar sesión</button>
     </nav>
   </header>
 
-  <main id="main" class="wrap" tabindex="-1">
-    <h1>Tus notificaciones</h1>
+  <main id="main" class="container" tabindex="-1">
+    <h1>Notificaciones</h1>
+    <p class="muted">Configurá tus preferencias y probá envíos de ejemplo.</p>
 
     <!-- Preferencias -->
-    <section class="card" aria-labelledby="pref-title">
-      <h2 id="pref-title">Preferencias de envío</h2>
-      <p class="hint">Elegí cómo y cuándo querés recibir recordatorios de turnos.</p>
-
-      <form id="form-notif" novalidate>
-        <div class="row">
-          <div>
+    <section class="panel">
+      <h2>Preferencias de envío</h2>
+      <form id="form-notif" class="form" novalidate>
+        <div class="grid grid--3">
+          <div class="form__group">
             <label for="channel"><strong>Canal preferido</strong></label>
             <select id="channel" name="channel">
               <option value="email">Email</option>
               <option value="sms">SMS</option>
               <option value="whatsapp">WhatsApp</option>
             </select>
-            <p class="hint">Podés cambiarlo en cualquier momento.</p>
           </div>
 
-          <div>
+          <div class="form__group">
             <label for="hoursBefore"><strong>Horas antes del turno</strong></label>
             <input id="hoursBefore" name="hoursBefore" type="number" min="1" max="168" value="24" />
-            <p class="hint">Entre 1 y 168 (1 semana).</p>
+            <p class="hint">Entre 1 y 168 (una semana).</p>
           </div>
 
-          <div>
-            <label for="lang"><strong>Idioma de los mensajes</strong></label>
+          <div class="form__group">
+            <label for="lang"><strong>Idioma</strong></label>
             <select id="lang" name="lang">
               <option value="es">Español</option>
               <option value="en">English</option>
             </select>
           </div>
 
-          <div>
-            <label for="quietFrom"><strong>Horario silencioso (desde)</strong></label>
+          <div class="form__group">
+            <label for="quietFrom"><strong>Silencio desde</strong></label>
             <input id="quietFrom" name="quietFrom" type="time" value="22:00" />
           </div>
 
-          <div>
-            <label for="quietTo"><strong>Horario silencioso (hasta)</strong></label>
+          <div class="form__group">
+            <label for="quietTo"><strong>Silencio hasta</strong></label>
             <input id="quietTo" name="quietTo" type="time" value="07:00" />
           </div>
 
-          <div>
+          <div class="form__group">
             <label for="testDest"><strong>Destino de prueba</strong></label>
             <input id="testDest" name="testDest" type="text" placeholder="tu@correo.com / +549..." />
-            <p class="hint">Se usará para el botón “Probar envío”.</p>
           </div>
         </div>
 
         <div class="actions">
           <button type="button" id="btnTest" class="btn">Probar envío (mock)</button>
-          <button type="submit" class="btn">Guardar preferencias</button>
+          <button type="submit" class="btn btn--primary">Guardar preferencias</button>
         </div>
       </form>
     </section>
 
-    <!-- Historial local (mock) -->
-    <section class="card" aria-labelledby="hist-title" style="margin-top:16px;">
-      <h2 id="hist-title">Historial de envíos (mock local)</h2>
-      <p class="hint">Solo para testing local. En producción lo proveerá el backend.</p>
-      <div id="history" class="row" style="grid-template-columns: repeat(1, 1fr);"></div>
+    <!-- Historial -->
+    <section class="panel">
+      <h2>Historial de envíos simulados</h2>
+      <p class="hint">Los envíos de prueba se almacenan localmente.</p>
+      <div id="history"></div>
       <div class="actions">
         <button id="btnClear" class="btn btn--danger" type="button">Limpiar historial</button>
       </div>
     </section>
 
-    <div id="toast" role="status" aria-live="polite"></div>
+    <div id="toast" role="status" aria-live="polite" class="toast"></div>
   </main>
 
-  <!-- Scripts -->
   <script src="js/notifications.js" defer></script>
 </body>
 </html>

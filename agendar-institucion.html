@@ -33,8 +33,8 @@
               <li><a href="agendar-especialidad.html">Agendar Turno</a></li>
             </ul>
           </li>
-          <li><a href="#">Perfil</a></li>
-          <li><a href="#">Notificaciones</a></li>
+          <li><a href="perfil.html">Perfil</a></li>
+          <li><a href="notificaciones.html">Notificaciones</a></li>
         </ul>
       </nav>
     </aside>
@@ -59,29 +59,19 @@
         <p class="muted">Elige la clínica u hospital donde deseas atenderte.</p>
 
         <ul class="list list--cards" role="list" aria-live="polite">
-          <!-- Clínica Sunchales "Dr. Plácido Tita" -->
           <li>
-            <article class="card" data-id="clinica-placido-tita">
+            <article class="card js-card" data-id="clinica-placido-tita" tabindex="0">
               <div class="card__body">
                 <h3 class="card__title">Clínica Sunchales “Dr. Plácido Tita”</h3>
                 <p class="muted">Dirección: 1° de Mayo 174, Sunchales</p>
-
                 <details>
                   <summary><strong>Servicios</strong></summary>
                   <ul class="list">
-                    <li>Radiografías y análisis de sangre <em>sin turno</em> (orden de llegada).</li>
+                    <li>Radiografías y análisis sin turno.</li>
                     <li>Turnos para ecografías por WhatsApp.</li>
-                    <li>Atención de urgencias 24 horas.</li>
+                    <li>Atención 24 horas.</li>
                   </ul>
                 </details>
-
-                <div class="actions mt-4">
-                  <!-- WhatsApp para turnos generales -->
-                  <a class="btn btn--ghost" target="_blank" rel="noopener"
-                     href="https://wa.me/543493420589">WhatsApp 3493-420589</a>
-                  <!-- WhatsApp/telefono para ecografías (número indicado) -->
-                  <a class="btn btn--ghost" href="tel:+543493434055">Tel: 3493-434055 (Eco)</a>
-                </div>
               </div>
               <footer class="card__footer">
                 <button class="btn btn--primary js-select" data-id="clinica-placido-tita">
@@ -91,25 +81,19 @@
             </article>
           </li>
 
-          <!-- Clínica Atilra Diez de Septiembre -->
           <li>
-            <article class="card" data-id="clinica-atilra-10-sept">
+            <article class="card js-card" data-id="clinica-atilra-10-sept" tabindex="0">
               <div class="card__body">
                 <h3 class="card__title">Clínica Atilra Diez de Septiembre</h3>
                 <p class="muted">Dirección: 25 de Mayo 69, Sunchales</p>
-
                 <details>
                   <summary><strong>Servicios</strong></summary>
                   <ul class="list">
-                    <li>Centro de alta complejidad con múltiples especialidades.</li>
+                    <li>Alta complejidad y múltiples especialidades.</li>
                     <li>Diagnóstico por imágenes.</li>
-                    <li>Tecnología innovadora para atención integral.</li>
+                    <li>Tecnología innovadora.</li>
                   </ul>
                 </details>
-
-                <div class="actions mt-4">
-                  <a class="btn btn--ghost" href="tel:+543493429300">Tel: (3493) 429300</a>
-                </div>
               </div>
               <footer class="card__footer">
                 <button class="btn btn--primary js-select" data-id="clinica-atilra-10-sept">
@@ -120,17 +104,58 @@
           </li>
         </ul>
 
+        <p class="form__feedback" aria-live="polite"></p>
+
         <div class="actions">
           <button class="btn btn--ghost" type="button" onclick="history.back()">Volver</button>
-          <button class="btn btn--primary" type="button">Confirmar turno</button>
+          <button class="btn btn--primary" type="button" id="btnConfirmar">Confirmar turno</button>
         </div>
       </section>
     </main>
   </div>
 
-  <!-- Scripts -->
-  <script src="js/app.js" defer></script>
-  <script src="js/auth.js" defer></script>
+  <!-- Mocks esenciales -->
+  <script>
+    const Auth = {
+      requireAuth(){
+        const s = JSON.parse(localStorage.getItem("mts.session") || "null");
+        if(!s){
+          const login = new URL("index.html", location.origin);
+          login.searchParams.set("next","agendar-institucion.html");
+          location.replace(login.toString());
+        }
+      },
+      currentUser(){
+        return JSON.parse(localStorage.getItem("mts.session") || "{}");
+      }
+    };
+
+    const MTS = {
+      Data(){
+        return {
+          institutions:[
+            { id:"clinica-placido-tita", name:"Clínica Sunchales “Dr. Plácido Tita”", address:"1° de Mayo 174, Sunchales" },
+            { id:"clinica-atilra-10-sept", name:"Clínica Atilra Diez de Septiembre", address:"25 de Mayo 69, Sunchales" }
+          ]
+        };
+      },
+      Draft:{
+        get(){ return JSON.parse(localStorage.getItem("mts.draft")||"{}"); },
+        set(p){ const prev=MTS.Draft.get(); localStorage.setItem("mts.draft",JSON.stringify({...prev,...p})); },
+        clear(){ localStorage.removeItem("mts.draft"); }
+      },
+      Appointments:{
+        add(a){
+          const arr = JSON.parse(localStorage.getItem("mts.appointments")||"[]");
+          const obj = { id:crypto.randomUUID(), createdAt:new Date().toISOString(), ...a };
+          arr.push(obj);
+          localStorage.setItem("mts.appointments",JSON.stringify(arr));
+          return obj;
+        }
+      }
+    };
+  </script>
+
   <script src="js/agendar-institucion.js" defer></script>
 </body>
 </html>
