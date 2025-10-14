@@ -85,6 +85,33 @@
   </div>
 
   <!-- Scripts -->
+   <script>
+  // Mock mínimo para MTS y Auth
+  const Auth = {
+    requireAuth() {
+      const session = JSON.parse(localStorage.getItem("mts.session") || "null");
+      if (!session) {
+        const login = new URL("index.html", location.origin);
+        login.searchParams.set("next", "agendar-especialidad.html");
+        location.href = login.toString();
+      }
+    }
+  };
+
+  const MTS = {
+    Data() {
+      return {
+        specialties: ["Cardiología", "Pediatría", "Dermatología", "Traumatología"]
+      };
+    },
+    Draft: {
+      set(obj) {
+        localStorage.setItem("mts.draft", JSON.stringify(obj));
+      }
+    }
+  };
+</script>
+
   <script src="js/app.js" defer></script>
   <script src="js/auth.js" defer></script>
   <script src="js/agendar-especialidad.js" defer></script>
