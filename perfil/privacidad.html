@@ -1,8 +1,10 @@
 <section class="perfil-section perfil-privacidad">
   <h1>Privacidad y datos personales</h1>
-  <p class="muted">Controlá tus preferencias de privacidad y gestión de datos personales.</p>
+  <p class="muted">
+    Controlá tus preferencias de privacidad y gestión de datos personales.
+  </p>
 
-  <form id="formPrivacidad" class="form" novalidate>
+  <form id="formPrivacidad" class="form" novalidate autocomplete="on">
     <fieldset class="group">
       <legend>Preferencias de visibilidad</legend>
 
@@ -36,20 +38,24 @@
       <button type="reset" class="btn btn--ghost">Restablecer</button>
     </div>
 
-    <p id="msgPrivacidad" class="form__feedback" aria-live="polite"></p>
+    <p id="msgPrivacidad" class="form__feedback" aria-live="polite" role="status"></p>
   </form>
 
   <hr class="sep" aria-hidden="true" />
 
   <section class="datos-personales">
     <h2>Gestión de datos personales</h2>
-    <p class="muted">Podés descargar o solicitar la eliminación de tus datos personales (simulado localmente).</p>
+    <p class="muted">
+      Podés descargar o eliminar tus datos personales (esta acción se simula localmente).
+    </p>
 
     <div class="actions">
       <button id="btnExportar" class="btn">Descargar mis datos</button>
       <button id="btnEliminarDatos" class="btn btn--danger">Eliminar mis datos</button>
     </div>
 
-    <p class="hint">Estas acciones se aplican solo al almacenamiento local de este navegador (mock).</p>
+    <p class="hint">
+      Estas acciones se aplican únicamente al almacenamiento local de este navegador (mock).
+    </p>
   </section>
 </section>

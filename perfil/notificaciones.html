@@ -1,9 +1,10 @@
-
 <section class="perfil-section perfil-notificaciones">
   <h1>Preferencias de notificaciones</h1>
-  <p class="muted">Elegí cómo y cuándo querés recibir recordatorios de tus turnos.</p>
+  <p class="muted">
+    Elegí cómo y cuándo querés recibir recordatorios de tus turnos y actualizaciones de tu cuenta.
+  </p>
 
-  <form id="formNotifPerfil" class="form" novalidate>
+  <form id="formNotifPerfil" class="form" novalidate autocomplete="on">
     <div class="grid grid--3">
       <div class="form__group">
         <label for="channel"><strong>Canal preferido</strong></label>
@@ -16,12 +17,21 @@
 
       <div class="form__group">
         <label for="hoursBefore"><strong>Horas antes del turno</strong></label>
-        <input id="hoursBefore" name="hoursBefore" type="number" min="1" max="168" />
-        <p class="hint">Entre 1 y 168 (una semana).</p>
+        <input
+          id="hoursBefore"
+          name="hoursBefore"
+          type="number"
+          min="1"
+          max="168"
+          placeholder="24"
+          inputmode="numeric"
+          required
+        />
+        <small class="hint">Entre 1 y 168 (una semana).</small>
       </div>
 
       <div class="form__group">
-        <label for="lang"><strong>Idioma</strong></label>
+        <label for="lang"><strong>Idioma de notificación</strong></label>
         <select id="lang" name="lang">
           <option value="es">Español</option>
           <option value="en">English</option>
@@ -40,7 +50,12 @@
 
       <div class="form__group">
         <label for="testDest"><strong>Destino de prueba</strong></label>
-        <input id="testDest" name="testDest" type="text" placeholder="tu@correo.com / +549..." />
+        <input
+          id="testDest"
+          name="testDest"
+          type="text"
+          placeholder="tu@correo.com / +549..."
+        />
       </div>
     </div>
 
@@ -49,15 +64,18 @@
       <button type="submit" class="btn btn--primary">Guardar preferencias</button>
     </div>
 
-    <p id="msgNotifPerfil" class="form__feedback" aria-live="polite"></p>
+    <p id="msgNotifPerfil" class="form__feedback" role="status" aria-live="polite"></p>
   </form>
 
   <hr class="sep" aria-hidden="true" />
 
   <section>
     <h2>Historial de notificaciones simuladas</h2>
-    <p class="hint">Los envíos de prueba se guardan localmente en este navegador.</p>
+    <p class="hint">
+      Los envíos de prueba se almacenan localmente solo en este navegador.
+    </p>
     <div id="notifHistory"></div>
+
     <div class="actions">
       <button id="btnClearNotif" class="btn btn--danger" type="button">Limpiar historial</button>
     </div>

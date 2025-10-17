@@ -36,21 +36,27 @@
 .form__group.checkbox {
   display: flex;
   align-items: center;
-  gap: .5rem;
-  margin-bottom: .5rem;
+  gap: .6rem;
+  margin-bottom: .75rem;
 }
 
 .form__group.checkbox input[type="checkbox"] {
-  width: 1rem;
-  height: 1rem;
+  width: 1.1rem;
+  height: 1.1rem;
   accent-color: var(--brand-500);
+  cursor: pointer;
+}
+
+.form__group.checkbox label {
+  cursor: pointer;
+  user-select: none;
 }
 
 .actions {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  margin-top: 1rem;
+  margin-top: 1.25rem;
 }
 
 .sep {
@@ -75,7 +81,6 @@
   margin-top: .75rem;
   font-weight: 500;
 }
-
 .form__feedback.success { color: var(--success); }
 .form__feedback.error { color: var(--danger); }
 

@@ -6,23 +6,17 @@ window.initPerfilView = function (viewName) {
 
   const LS_PROFILE = "mts.user.profile";
   const LS_HISTORY = "mts.notify.history";
-  let profile = JSON.parse(localStorage.getItem(LS_PROFILE) || "null") || {};
+  let profile = JSON.parse(localStorage.getItem(LS_PROFILE) || "{}");
 
   const form = document.getElementById("formNotifPerfil");
   const msg = document.getElementById("msgNotifPerfil");
   const historyEl = document.getElementById("notifHistory");
 
-  const channel = form.channel;
-  const hoursBefore = form.hoursBefore;
-  const lang = form.lang;
-  const quietFrom = form.quietFrom;
-  const quietTo = form.quietTo;
-  const testDest = form.testDest;
-
+  const { channel, hoursBefore, lang, quietFrom, quietTo, testDest } = form;
   const btnTest = document.getElementById("btnTestNotif");
   const btnClear = document.getElementById("btnClearNotif");
 
-  // Cargar datos iniciales
+  // --- Cargar valores guardados ---
   const prefs = profile.notificationPrefs || {
     channel: "email",
     hoursBefore: 24,
@@ -38,13 +32,13 @@ window.initPerfilView = function (viewName) {
   lang.value = profile.locale || prefs.lang;
   testDest.value = profile.email || "";
 
-  // --- Guardar preferencias ---
+  /* ===== Guardar preferencias ===== */
   form.addEventListener("submit", (e) => {
     e.preventDefault();
+
     const hb = parseInt(hoursBefore.value || "24", 10);
     if (isNaN(hb) || hb < 1 || hb > 168) {
-      msg.textContent = "⚠️ Las horas deben estar entre 1 y 168.";
-      msg.className = "form__feedback error";
+      setFeedback("⚠️ Las horas deben estar entre 1 y 168.", "error");
       return;
     }
 
@@ -58,17 +52,15 @@ window.initPerfilView = function (viewName) {
     profile.locale = lang.value;
     localStorage.setItem(LS_PROFILE, JSON.stringify(profile));
 
-    msg.textContent = "✅ Preferencias guardadas correctamente.";
-    msg.className = "form__feedback success";
+    setFeedback("✅ Preferencias de notificaciones guardadas correctamente.", "success");
     toast("Notificaciones actualizadas ✅");
   });
 
-  // --- Simular envío de prueba ---
+  /* ===== Simular envío de prueba ===== */
   btnTest?.addEventListener("click", () => {
     const dest = testDest.value.trim();
     if (!dest) {
-      msg.textContent = "⚠️ Ingresá un destino de prueba.";
-      msg.className = "form__feedback error";
+      setFeedback("⚠️ Ingresá un destino de prueba válido.", "error");
       return;
     }
 
@@ -79,23 +71,26 @@ window.initPerfilView = function (viewName) {
       to: dest,
       preview: `Recordatorio (${hoursBefore.value}h antes del turno)`,
     };
+
     const hist = JSON.parse(localStorage.getItem(LS_HISTORY) || "[]");
     hist.unshift(item);
     localStorage.setItem(LS_HISTORY, JSON.stringify(hist));
     renderHistory(hist);
-    toast(`Simulado por ${item.channel} → ${dest}`);
+    toast(`Envío simulado por ${item.channel} → ${dest}`);
   });
 
-  // --- Limpiar historial ---
+  /* ===== Limpiar historial ===== */
   btnClear?.addEventListener("click", () => {
-    if (!confirm("¿Eliminar el historial de notificaciones?")) return;
+    if (!confirm("¿Eliminar el historial de notificaciones simuladas?")) return;
     localStorage.removeItem(LS_HISTORY);
     renderHistory([]);
+    toast("Historial de notificaciones eliminado 🧹");
   });
 
+  /* ===== Render inicial ===== */
   renderHistory(JSON.parse(localStorage.getItem(LS_HISTORY) || "[]"));
 
-  // --- Helpers ---
+  /* ===== Helpers ===== */
   function renderHistory(items) {
     historyEl.innerHTML = items.length
       ? items.map(n => `
@@ -105,12 +100,17 @@ window.initPerfilView = function (viewName) {
             <div class="hint">Canal: ${n.channel} • Destino: ${escapeHtml(n.to)}</div>
           </article>
         `).join("")
-      : `<p class="hint">No hay envíos de prueba aún.</p>`;
+      : `<p class="hint">No hay notificaciones de prueba registradas.</p>`;
+  }
+
+  function setFeedback(text, type = "info") {
+    msg.textContent = text;
+    msg.className = `form__feedback ${type}`;
   }
 
   function escapeHtml(str) {
     return String(str).replace(/[&<>"']/g, c => ({
-      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;",
+      "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"
     }[c]));
   }
 };

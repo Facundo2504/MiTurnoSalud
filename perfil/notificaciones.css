@@ -33,6 +33,7 @@
   border-radius: 8px;
   background: var(--panel-2);
   color: var(--text);
+  transition: border-color .15s ease;
 }
 
 .form__group select:focus,
@@ -52,7 +53,6 @@
   margin-top: 1rem;
   font-weight: 500;
 }
-
 .form__feedback.success { color: var(--success); }
 .form__feedback.error { color: var(--danger); }
 
@@ -75,10 +75,16 @@
   border-radius: 8px;
   padding: .75rem 1rem;
   box-shadow: var(--shadow-1);
+  transition: background .15s ease;
 }
 
 #notifHistory .card:hover {
   background: color-mix(in srgb, var(--panel-2) 85%, var(--brand-500) 3%);
+}
+
+#notifHistory .hint {
+  color: var(--muted);
+  font-size: .9rem;
 }
 
 @media (max-width: 600px) {
