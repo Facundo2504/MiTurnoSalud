@@ -10,7 +10,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Header -->
+  <!-- Header unificado -->
   <header class="site-header" role="banner">
     <div class="site-header__brand">
       <a href="index.html" class="brand__link">
@@ -23,7 +23,7 @@
   <main class="container">
     <h1>Iniciar Sesión</h1>
 
-    <form class="form" action="#" method="post" autocomplete="on" novalidate>
+    <form id="loginForm" class="form" action="#" method="post" autocomplete="on" novalidate>
       <div class="form__group">
         <label for="email">Correo electrónico</label>
         <input
@@ -48,17 +48,18 @@
           minlength="8"
           autocomplete="current-password"
           placeholder="********">
-        <!-- Los mensajes de error por campo se insertan aquí dinámicamente si es necesario -->
       </div>
 
       <!-- Toggle mostrar contraseña -->
       <div class="form__group">
         <label style="display:flex; align-items:center; gap:.5rem;">
-          <input id="togglePassword" type="checkbox"> Mostrar contraseña
+          <input id="togglePassword" type="checkbox" aria-controls="password"> Mostrar contraseña
         </label>
       </div>
 
       <button type="submit" class="btn btn--primary">Iniciar sesión</button>
+
+      <p id="loginFeedback" class="form__help" role="alert" aria-live="polite"></p>
 
       <p class="form__help">
         <a href="recuperar.html">¿Olvidaste tu contraseña?</a>
@@ -70,9 +71,23 @@
     </form>
   </main>
 
-  <!-- Scripts -->
-  <script src="js/app.js" defer></script>
-  <script src="js/auth.js" defer></script>
+  <noscript>
+    <p class="form__help" style="color: var(--danger); text-align:center">
+      Necesitas habilitar JavaScript para iniciar sesión.
+    </p>
+  </noscript>
+
+  <!-- Scripts: solo lo necesario -->
+  <script>
+    // Mostrar/ocultar contraseña (no interfiere con login.js)
+    document.addEventListener('DOMContentLoaded', () => {
+      const chk = document.getElementById('togglePassword');
+      const pass = document.getElementById('password');
+      chk?.addEventListener('change', () => {
+        pass.type = chk.checked ? 'text' : 'password';
+      });
+    });
+  </script>
   <script src="js/login.js" defer></script>
 </body>
 </html>
