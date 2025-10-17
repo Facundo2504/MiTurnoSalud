@@ -10,7 +10,6 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
-  <!-- Header -->
   <header class="site-header" role="banner">
     <div class="site-header__brand">
       <a href="dashboard.html" class="brand__link">
@@ -18,11 +17,15 @@
         <span class="brand__name">MiTurnoSalud</span>
       </a>
     </div>
-    <nav>
-      <a href="perfil.html" class="btn btn--ghost" style="margin-right: 1rem;">Perfil</a>
-      <button class="btn btn--ghost" style="margin-right: 1rem;" onclick="Auth.logout()">Cerrar sesión</button>
+
+    <nav class="site-header__actions" aria-label="Acciones">
+      <a href="dashboard.html" class="btn btn--ghost">Inicio</a>
+      <a href="perfil.html" class="btn btn--primary">Perfil</a>
+      <button id="btnTheme" type="button" class="btn btn--ghost" aria-pressed="false">🌞 Día</button>
+      <button id="btnLogout" type="button" class="btn btn--primary">Cerrar sesión</button>
     </nav>
   </header>
+
 
   <div class="layout">
     <!-- Sidebar -->

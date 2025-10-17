@@ -975,6 +975,35 @@ select { min-height: 46px; }
 .time--selected, .time:hover { border-color: var(--brand-500); background: color-mix(in oklab, var(--panel) 85%, var(--brand-500) 10%); }
 .time.is-invalid { border-color: var(--danger); }
 
+/* ========================= */
+/* HEADER: botones canónicos */
+/* ========================= */
+.site-header {
+  display:flex; justify-content:space-between; align-items:center;
+  padding: 14px 18px; background: linear-gradient(90deg,#5468ff,#34a3c5);
+  position: sticky; top: 0; z-index: 50;
+}
+.site-header__brand .brand__link { display:flex; align-items:center; gap:10px; text-decoration:none; }
+.site-header__brand .brand__name { font-weight:800; font-size:1.6rem; color:#fff; }
+
+.site-header__actions { display:flex; gap:14px; align-items:center; }
+.site-header__actions .btn {
+  height: 42px; padding: 0 16px; border-radius: 12px; font-weight: 700;
+  box-shadow: 0 6px 18px rgba(0,0,0,.18);
+}
+.site-header__actions .btn--primary {
+  background: #2c59ff; color: #fff; border: 1px solid rgba(255,255,255,.25);
+}
+.site-header__actions .btn--primary:hover { filter: brightness(1.05); transform: translateY(-1px); }
+.site-header__actions .btn--ghost {
+  background: rgba(255,255,255,.14); color: #fff; border: 1px solid rgba(255,255,255,.35);
+}
+.site-header__actions .btn--ghost:hover { background: rgba(255,255,255,.22); transform: translateY(-1px); }
+
+@media (max-width: 640px){
+  .site-header__actions .btn { height: 40px; padding: 0 12px; border-radius: 10px; }
+  .site-header__brand .brand__name { font-size: 1.25rem; }
+}
 
 
 /* =========================================================

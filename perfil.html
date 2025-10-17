@@ -13,21 +13,22 @@
 <body>
   <a class="skip" href="#main">Saltar al contenido principal</a>
 
-  <header class="site-header">
+  <header class="site-header" role="banner">
     <div class="site-header__brand">
       <a href="dashboard.html" class="brand__link">
         <img src="assets/img/logo.svg" alt="" aria-hidden="true" class="brand__logo">
         <span class="brand__name">MiTurnoSalud</span>
       </a>
     </div>
-    <nav aria-label="Principal">
-      <a href="dashboard.html">Inicio</a>
-      <a href="perfil.html" aria-current="page">Perfil</a>
-      <a href="notificaciones.html">Notificaciones</a>
-      <button id="btnTheme" class="btn btn--ghost">🌞 Día</button>
-      <button id="btnLogout" class="btn btn--ghost">Cerrar sesión</button>
+
+    <nav class="site-header__actions" aria-label="Acciones">
+      <a href="dashboard.html" class="btn btn--ghost">Inicio</a>
+      <a href="perfil.html" class="btn btn--primary">Perfil</a>
+      <button id="btnTheme" type="button" class="btn btn--ghost" aria-pressed="false">🌞 Día</button>
+      <button id="btnLogout" type="button" class="btn btn--primary">Cerrar sesión</button>
     </nav>
   </header>
+
 
   <main id="main" class="wrap perfil" tabindex="-1">
     <aside class="perfil__nav" aria-label="Opciones de perfil">

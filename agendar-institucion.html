@@ -18,7 +18,15 @@
         <span class="brand__name">MiTurnoSalud</span>
       </a>
     </div>
+
+    <nav class="site-header__actions" aria-label="Acciones">
+      <a href="dashboard.html" class="btn btn--ghost">Inicio</a>
+      <a href="perfil.html" class="btn btn--primary">Perfil</a>
+      <button id="btnTheme" type="button" class="btn btn--ghost" aria-pressed="false">🌞 Día</button>
+      <button id="btnLogout" type="button" class="btn btn--primary">Cerrar sesión</button>
+    </nav>
   </header>
+
 
   <!-- Layout -->
   <div class="layout">
@@ -131,30 +139,49 @@
       }
     };
 
-    const MTS = {
+      const MTS = {
       Data(){
         return {
-          institutions:[
-            { id:"clinica-placido-tita", name:"Clínica Sunchales “Dr. Plácido Tita”", address:"1° de Mayo 174, Sunchales" },
-            { id:"clinica-atilra-10-sept", name:"Clínica Atilra Diez de Septiembre", address:"25 de Mayo 69, Sunchales" }
+          institutions: [
+            /* SUNCHALES */
+            { id:"clinica-placido-tita", name:"Clínica Sunchales “Dr. Plácido Tita”", address:"1° de Mayo 174, Sunchales", telefono:"+54 3493 420000", whatsapp:"+543493420000" },
+            { id:"clinica-atilra-10-sept", name:"Clínica Atilra Diez de Septiembre", address:"25 de Mayo 69, Sunchales", telefono:"+54 3493 440000", whatsapp:"+543493440000" },
+
+            /* RAFAELA */
+            { id:"hospital-jaime-ferre", name:"Hospital Dr. Jaime Ferré", address:"Av. Pres. Roca 1500, Rafaela", telefono:"+54 3492 450000", whatsapp:"+543492450000" },
+            { id:"sanatorio-rafaela", name:"Sanatorio Rafaela (GO)", address:"Bv. Santa Fe 2450, Rafaela", telefono:"+54 3492 430000", whatsapp:"+543492430000" },
+            { id:"sanatorio-nosti", name:"Sanatorio Nosti", address:"Bv. Lehmann 200, Rafaela", telefono:"+54 3492 460000", whatsapp:"+543492460000" },
+
+            /* HUMBERTO PRIMO */
+            { id:"samco-humberto", name:"SAMCo Humberto Primo", address:"Italia 555, Humberto Primo", telefono:"+54 3493 470000" },
+
+            /* LEHMANN */
+            { id:"samco-lehmann", name:"SAMCo Lehmann", address:"Belgrano 320, Lehmann", telefono:"+54 3492 470100" },
+
+            /* ATALIVA */
+            { id:"samco-ataliva", name:"SAMCo Ataliva", address:"Lisandro de la Torre 220, Ataliva", telefono:"+54 3493 470200" },
+
+            /* SUSANA */
+            { id:"samco-susana", name:"SAMCo Susana", address:"San Martín 180, Susana", telefono:"+54 3492 470300" },
+
+            /* BELLA ITALIA */
+            { id:"samco-bella-italia", name:"SAMCo Bella Italia", address:"Italia 50, Bella Italia", telefono:"+54 3492 470400" },
+
+            /* ANGÉLICA */
+            { id:"samco-angelica", name:"SAMCo Angélica", address:"Av. Mitre 90, Angélica", telefono:"+54 3492 470500" },
           ]
         };
       },
       Draft:{
         get(){ return JSON.parse(localStorage.getItem("mts.draft")||"{}"); },
-        set(p){ const prev=MTS.Draft.get(); localStorage.setItem("mts.draft",JSON.stringify({...prev,...p})); },
+        set(p){ const prev=JSON.parse(localStorage.getItem("mts.draft")||"{}"); localStorage.setItem("mts.draft", JSON.stringify({...prev,...p})); },
         clear(){ localStorage.removeItem("mts.draft"); }
       },
       Appointments:{
-        add(a){
-          const arr = JSON.parse(localStorage.getItem("mts.appointments")||"[]");
-          const obj = { id:crypto.randomUUID(), createdAt:new Date().toISOString(), ...a };
-          arr.push(obj);
-          localStorage.setItem("mts.appointments",JSON.stringify(arr));
-          return obj;
-        }
+        add(a){ const arr=JSON.parse(localStorage.getItem("mts.appointments")||"[]"); const obj={ id:crypto.randomUUID(), createdAt:new Date().toISOString(), ...a }; arr.push(obj); localStorage.setItem("mts.appointments", JSON.stringify(arr)); return obj; }
       }
     };
+      
   </script>
 
   <script src="js/agendar-institucion.js" defer></script>
