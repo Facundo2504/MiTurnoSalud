@@ -1,0 +1,87 @@
+/* ===================== */
+/* PERFIL → NOTIFICACIONES */
+/* ===================== */
+
+.perfil-notificaciones {
+  background: var(--panel);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: var(--shadow-1);
+}
+
+.perfil-notificaciones h1 {
+  font-size: 1.5rem;
+  margin-bottom: .25rem;
+}
+
+.perfil-notificaciones .muted {
+  margin-bottom: 1.5rem;
+  color: var(--muted);
+}
+
+.grid.grid--3 {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 1rem;
+}
+
+.form__group select,
+.form__group input {
+  width: 100%;
+  padding: .6rem .8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--panel-2);
+  color: var(--text);
+}
+
+.form__group select:focus,
+.form__group input:focus {
+  outline: none;
+  border-color: var(--brand-500);
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.form__feedback {
+  margin-top: 1rem;
+  font-weight: 500;
+}
+
+.form__feedback.success { color: var(--success); }
+.form__feedback.error { color: var(--danger); }
+
+.sep {
+  margin: 1.5rem 0;
+  border: none;
+  height: 1px;
+  background: var(--border);
+}
+
+#notifHistory {
+  display: grid;
+  gap: .75rem;
+  margin-top: 1rem;
+}
+
+#notifHistory .card {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: .75rem 1rem;
+  box-shadow: var(--shadow-1);
+}
+
+#notifHistory .card:hover {
+  background: color-mix(in srgb, var(--panel-2) 85%, var(--brand-500) 3%);
+}
+
+@media (max-width: 600px) {
+  .perfil-notificaciones { padding: 1rem; }
+  .grid.grid--3 { grid-template-columns: 1fr; }
+}
