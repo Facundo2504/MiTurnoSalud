@@ -4,6 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <meta name="color-scheme" content="light dark" />
+  <meta name="description" content="Gestioná tu información personal, seguridad, privacidad y notificaciones.">
   <title>Perfil del usuario | MiTurnoSalud</title>
   <link rel="icon" href="assets/img/logo.svg" />
   <link rel="stylesheet" href="styles.css" />
@@ -13,6 +14,7 @@
 <body>
   <a class="skip" href="#main">Saltar al contenido principal</a>
 
+  <!-- HEADER GLOBAL -->
   <header class="site-header" role="banner">
     <div class="site-header__brand">
       <a href="dashboard.html" class="brand__link">
@@ -23,30 +25,52 @@
 
     <nav class="site-header__actions" aria-label="Acciones">
       <a href="dashboard.html" class="btn btn--ghost">Inicio</a>
-      <a href="perfil.html" class="btn btn--primary">Perfil</a>
+      <a href="perfil.html" class="btn btn--primary" aria-current="page">Perfil</a>
       <button id="btnTheme" type="button" class="btn btn--ghost" aria-pressed="false">🌞 Día</button>
       <button id="btnLogout" type="button" class="btn btn--primary">Cerrar sesión</button>
     </nav>
   </header>
 
-
-  <main id="main" class="wrap perfil" tabindex="-1">
+  <!-- CONTENIDO PRINCIPAL -->
+  <main id="main" class="wrap perfil" role="main" tabindex="-1">
+    <!-- Navegación lateral de pestañas -->
     <aside class="perfil__nav" aria-label="Opciones de perfil">
       <ul role="tablist">
-        <li><button id="tab-general" role="tab" aria-controls="view" aria-selected="true" data-route="/general">General</button></li>
-        <li><button id="tab-seguridad" role="tab" aria-controls="view" aria-selected="false" data-route="/seguridad">Seguridad</button></li>
-        <li><button id="tab-notificaciones" role="tab" aria-controls="view" aria-selected="false" data-route="/notificaciones">Notificaciones</button></li>
-        <li><button id="tab-privacidad" role="tab" aria-controls="view" aria-selected="false" data-route="/privacidad">Privacidad</button></li>
+        <li>
+          <button id="tab-general" role="tab" data-route="/general" aria-selected="true" aria-controls="view">General</button>
+        </li>
+        <li>
+          <button id="tab-seguridad" role="tab" data-route="/seguridad" aria-selected="false" aria-controls="view">Seguridad</button>
+        </li>
+        <li>
+          <button id="tab-privacidad" role="tab" data-route="/privacidad" aria-selected="false" aria-controls="view">Privacidad</button>
+        </li>
+        <li>
+          <button id="tab-notificaciones" role="tab" data-route="/notificaciones" aria-selected="false" aria-controls="view">Notificaciones</button>
+        </li>
       </ul>
     </aside>
 
-    <section id="view" class="perfil__view" aria-live="polite">
-      <p class="hint">Cargando…</p>
+    <!-- Vista dinámica -->
+    <section id="view" class="perfil__view" role="tabpanel" tabindex="0" aria-live="polite">
+      <p class="hint">Cargando contenido del perfil...</p>
     </section>
   </main>
 
+  <!-- Toast global -->
   <div id="toast" class="toast" role="status" aria-live="polite"></div>
 
+  <!-- FOOTER opcional -->
+  <footer class="site-footer" role="contentinfo">
+    <p>© <span id="year"></span> MiTurnoSalud · Todos los derechos reservados.</p>
+  </footer>
+
+  <script>
+    // Año dinámico del footer
+    document.addEventListener("DOMContentLoaded",()=>{
+      document.getElementById("year").textContent=new Date().getFullYear();
+    });
+  </script>
   <script src="js/perfil.js" defer></script>
 </body>
 </html>
