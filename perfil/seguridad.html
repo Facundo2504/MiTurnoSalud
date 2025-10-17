@@ -1,22 +1,44 @@
 <section class="perfil-section perfil-seguridad">
   <h1>Seguridad de la cuenta</h1>
-  <p class="muted">Actualizá tu correo y/o contraseña. Por seguridad, necesitás confirmar tu contraseña actual.</p>
+  <p class="muted">
+    Actualizá tu correo y/o contraseña. Por seguridad, necesitás confirmar tu contraseña actual.
+  </p>
 
-  <form id="formSeguridad" class="form" novalidate>
+  <form id="formSeguridad" class="form" novalidate autocomplete="on">
     <fieldset class="group">
       <legend>Identidad</legend>
 
       <div class="form__group">
         <label for="currentEmail">Correo actual</label>
-        <input id="currentEmail" name="currentEmail" type="email" readonly />
+        <input
+          id="currentEmail"
+          name="currentEmail"
+          type="email"
+          readonly
+          autocomplete="email"
+        />
         <small class="hint">Este es el correo con el que tenés sesión.</small>
       </div>
 
       <div class="form__group">
         <label for="currentPassword">Contraseña actual <span class="req">*</span></label>
         <div class="input-pass">
-          <input id="currentPassword" name="currentPassword" type="password" required minlength="8" autocomplete="current-password" />
-          <button type="button" class="toggle-pass" data-for="currentPassword" aria-label="Mostrar u ocultar contraseña">👁️</button>
+          <input
+            id="currentPassword"
+            name="currentPassword"
+            type="password"
+            required
+            minlength="8"
+            autocomplete="current-password"
+          />
+          <button
+            type="button"
+            class="toggle-pass"
+            data-for="currentPassword"
+            aria-label="Mostrar u ocultar contraseña"
+          >
+            👁️
+          </button>
         </div>
         <small class="hint">Requerida para confirmar cambios sensibles.</small>
       </div>
@@ -24,10 +46,15 @@
 
     <fieldset class="group">
       <legend>Actualizar correo (opcional)</legend>
-
       <div class="form__group">
         <label for="newEmail">Nuevo correo</label>
-        <input id="newEmail" name="newEmail" type="email" placeholder="ej: nuevo@mail.com" autocomplete="email" />
+        <input
+          id="newEmail"
+          name="newEmail"
+          type="email"
+          placeholder="ej: nuevo@mail.com"
+          autocomplete="email"
+        />
         <small class="hint">Dejalo vacío si no querés cambiarlo.</small>
       </div>
     </fieldset>
@@ -38,16 +65,43 @@
       <div class="form__group">
         <label for="newPassword">Nueva contraseña</label>
         <div class="input-pass">
-          <input id="newPassword" name="newPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Mínimo 8 caracteres" />
-          <button type="button" class="toggle-pass" data-for="newPassword" aria-label="Mostrar u ocultar contraseña">👁️</button>
+          <input
+            id="newPassword"
+            name="newPassword"
+            type="password"
+            minlength="8"
+            autocomplete="new-password"
+            placeholder="Mínimo 8 caracteres"
+          />
+          <button
+            type="button"
+            class="toggle-pass"
+            data-for="newPassword"
+            aria-label="Mostrar u ocultar contraseña"
+          >
+            👁️
+          </button>
         </div>
       </div>
 
       <div class="form__group">
         <label for="newPassword2">Repetir nueva contraseña</label>
         <div class="input-pass">
-          <input id="newPassword2" name="newPassword2" type="password" minlength="8" autocomplete="new-password" />
-          <button type="button" class="toggle-pass" data-for="newPassword2" aria-label="Mostrar u ocultar contraseña">👁️</button>
+          <input
+            id="newPassword2"
+            name="newPassword2"
+            type="password"
+            minlength="8"
+            autocomplete="new-password"
+          />
+          <button
+            type="button"
+            class="toggle-pass"
+            data-for="newPassword2"
+            aria-label="Mostrar u ocultar contraseña"
+          >
+            👁️
+          </button>
         </div>
       </div>
     </fieldset>
@@ -57,7 +111,7 @@
       <button type="reset" class="btn btn--ghost">Cancelar</button>
     </div>
 
-    <p id="msgSeguridad" class="form__feedback" aria-live="polite"></p>
+    <p id="msgSeguridad" class="form__feedback" role="status" aria-live="polite"></p>
   </form>
 
   <hr class="sep" aria-hidden="true" />
@@ -65,9 +119,15 @@
   <details class="danger-zone">
     <summary><strong>Zona de riesgo</strong> (opciones avanzadas)</summary>
     <div class="danger-actions">
-      <button type="button" id="btnLogoutAll" class="btn btn--outline-danger">Cerrar sesión en otros dispositivos</button>
-      <button type="button" id="btnDelete" class="btn btn--danger">Eliminar cuenta (mock)</button>
+      <button type="button" id="btnLogoutAll" class="btn btn--outline-danger">
+        Cerrar sesión en otros dispositivos
+      </button>
+      <button type="button" id="btnDelete" class="btn btn--danger">
+        Eliminar cuenta (mock)
+      </button>
     </div>
-    <p class="hint">Estas acciones son irreversibles o afectan tu sesión en otros navegadores.</p>
+    <p class="hint">
+      Estas acciones son irreversibles o afectan tu sesión en otros navegadores.
+    </p>
   </details>
 </section>
