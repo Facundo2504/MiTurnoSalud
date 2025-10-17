@@ -2,25 +2,48 @@
   <h1>Datos personales</h1>
   <p class="muted">Actualizá tu información personal básica.</p>
 
-  <form id="formGeneral" class="form" novalidate>
+  <form id="formGeneral" class="form" novalidate autocomplete="on">
     <div class="form__group">
       <label for="nombre">Nombre completo</label>
-      <input id="nombre" name="nombre" type="text" required placeholder="Ej. Juan Pérez" />
+      <input
+        id="nombre"
+        name="nombre"
+        type="text"
+        required
+        placeholder="Ej. Juan Pérez"
+        autocomplete="name"
+        inputmode="text"
+      />
     </div>
 
     <div class="form__group">
       <label for="email">Correo electrónico</label>
-      <input id="email" name="email" type="email" required placeholder="Ej. juan@mail.com" />
+      <input
+        id="email"
+        name="email"
+        type="email"
+        required
+        placeholder="Ej. juan@mail.com"
+        autocomplete="email"
+        inputmode="email"
+      />
     </div>
 
     <div class="form__group">
       <label for="telefono">Teléfono</label>
-      <input id="telefono" name="telefono" type="tel" placeholder="+54 9 11 1234 5678" />
+      <input
+        id="telefono"
+        name="telefono"
+        type="tel"
+        placeholder="+54 9 11 1234 5678"
+        autocomplete="tel"
+        inputmode="tel"
+      />
     </div>
 
     <div class="form__group">
       <label for="zona">Zona horaria</label>
-      <select id="zona" name="zona">
+      <select id="zona" name="zona" autocomplete="timezone">
         <option value="America/Argentina/Buenos_Aires">Argentina (Buenos Aires)</option>
         <option value="America/Santiago">Chile (Santiago)</option>
         <option value="America/Bogota">Colombia (Bogotá)</option>
@@ -35,6 +58,6 @@
       <button type="reset" class="btn btn--ghost">Restablecer</button>
     </div>
 
-    <p id="msgGeneral" class="form__feedback" aria-live="polite"></p>
+    <p id="msgGeneral" class="form__feedback" aria-live="polite" role="status"></p>
   </form>
 </section>
