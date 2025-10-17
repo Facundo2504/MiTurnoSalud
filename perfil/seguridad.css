@@ -1,0 +1,76 @@
+/* ===================== */
+/* PERFIL → SEGURIDAD    */
+/* ===================== */
+
+.perfil-seguridad {
+  background: var(--panel);
+  border-radius: 12px;
+  padding: 2rem;
+  box-shadow: var(--shadow-1);
+}
+
+.perfil-seguridad h1 {
+  font-size: 1.5rem;
+  margin-bottom: .25rem;
+}
+
+.perfil-seguridad .muted {
+  margin-bottom: 1.5rem;
+  color: var(--muted);
+}
+
+.group {
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  background: var(--panel-2);
+}
+.group > legend {
+  padding: 0 .35rem;
+  font-weight: 700;
+  color: var(--text-strong);
+}
+
+.form__group { margin-bottom: 1rem; }
+.form__group label { display: block; font-weight: 600; margin-bottom: .35rem; }
+.form__group input {
+  width: 100%;
+  padding: .65rem .8rem;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--bg);
+  color: var(--text);
+  transition: border-color .15s ease;
+}
+.form__group input:focus { outline: none; border-color: var(--brand-500); }
+
+.input-pass { position: relative; }
+.toggle-pass {
+  position: absolute; right: .5rem; top: 50%; transform: translateY(-50%);
+  border: 0; background: transparent; cursor: pointer;
+  font-size: 1rem; line-height: 1; padding: .2rem .3rem;
+  color: var(--muted);
+}
+.toggle-pass:hover { color: var(--text-strong); }
+
+.req { color: var(--danger); }
+
+.form__feedback { margin-top: .5rem; font-weight: 500; }
+.form__feedback.success { color: var(--success); }
+.form__feedback.error { color: var(--danger); }
+
+.is-invalid { border-color: var(--danger) !important; }
+.field-error { color: var(--danger); font-size: .875rem; margin-top: .25rem; }
+
+.actions { display: flex; gap: 1rem; margin-top: 1.25rem; }
+
+.sep { margin: 1.25rem 0; border: none; height: 1px; background: var(--border); }
+
+.danger-zone { background: var(--panel-2); border: 1px solid var(--border); border-radius: 10px; padding: .75rem 1rem; }
+.danger-zone summary { cursor: pointer; }
+.danger-actions { display: flex; gap: .5rem; margin-top: .75rem; flex-wrap: wrap; }
+
+@media (max-width: 600px) {
+  .perfil-seguridad { padding: 1rem; }
+}

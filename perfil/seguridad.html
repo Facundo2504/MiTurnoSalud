@@ -1,75 +1,73 @@
-<!-- Fragmento: perfil/seguridad.html -->
-<section aria-labelledby="perfil-seguridad">
-  <h2 id="perfil-seguridad">Seguridad</h2>
-  <p class="hint">Para cambios sensibles se requiere tu email y contraseña actuales (mock local).</p>
+<section class="perfil-section perfil-seguridad">
+  <h1>Seguridad de la cuenta</h1>
+  <p class="muted">Actualizá tu correo y/o contraseña. Por seguridad, necesitás confirmar tu contraseña actual.</p>
 
-  <form id="form-seguridad" class="card" novalidate>
-    <div class="row">
-      <div class="field">
-        <label for="currentEmail">Email actual</label>
-        <input id="currentEmail" type="email" required />
+  <form id="formSeguridad" class="form" novalidate>
+    <fieldset class="group">
+      <legend>Identidad</legend>
+
+      <div class="form__group">
+        <label for="currentEmail">Correo actual</label>
+        <input id="currentEmail" name="currentEmail" type="email" readonly />
+        <small class="hint">Este es el correo con el que tenés sesión.</small>
       </div>
-      <div class="field">
-        <label for="currentPassword">Contraseña actual</label>
-        <input id="currentPassword" type="password" required />
+
+      <div class="form__group">
+        <label for="currentPassword">Contraseña actual <span class="req">*</span></label>
+        <div class="input-pass">
+          <input id="currentPassword" name="currentPassword" type="password" required minlength="8" autocomplete="current-password" />
+          <button type="button" class="toggle-pass" data-for="currentPassword" aria-label="Mostrar u ocultar contraseña">👁️</button>
+        </div>
+        <small class="hint">Requerida para confirmar cambios sensibles.</small>
       </div>
-      <div class="field">
-        <label for="newEmail">Nuevo email</label>
-        <input id="newEmail" type="email" placeholder="opcional" />
+    </fieldset>
+
+    <fieldset class="group">
+      <legend>Actualizar correo (opcional)</legend>
+
+      <div class="form__group">
+        <label for="newEmail">Nuevo correo</label>
+        <input id="newEmail" name="newEmail" type="email" placeholder="ej: nuevo@mail.com" autocomplete="email" />
+        <small class="hint">Dejalo vacío si no querés cambiarlo.</small>
       </div>
-      <div class="field">
+    </fieldset>
+
+    <fieldset class="group">
+      <legend>Actualizar contraseña (opcional)</legend>
+
+      <div class="form__group">
         <label for="newPassword">Nueva contraseña</label>
-        <input id="newPassword" type="password" minlength="8" placeholder="mín. 8 caracteres" />
+        <div class="input-pass">
+          <input id="newPassword" name="newPassword" type="password" minlength="8" autocomplete="new-password" placeholder="Mínimo 8 caracteres" />
+          <button type="button" class="toggle-pass" data-for="newPassword" aria-label="Mostrar u ocultar contraseña">👁️</button>
+        </div>
       </div>
-    </div>
+
+      <div class="form__group">
+        <label for="newPassword2">Repetir nueva contraseña</label>
+        <div class="input-pass">
+          <input id="newPassword2" name="newPassword2" type="password" minlength="8" autocomplete="new-password" />
+          <button type="button" class="toggle-pass" data-for="newPassword2" aria-label="Mostrar u ocultar contraseña">👁️</button>
+        </div>
+      </div>
+    </fieldset>
 
     <div class="actions">
-      <button type="submit" class="btn">Actualizar seguridad</button>
+      <button type="submit" class="btn btn--primary">Guardar cambios</button>
+      <button type="reset" class="btn btn--ghost">Cancelar</button>
     </div>
+
+    <p id="msgSeguridad" class="form__feedback" aria-live="polite"></p>
   </form>
+
+  <hr class="sep" aria-hidden="true" />
+
+  <details class="danger-zone">
+    <summary><strong>Zona de riesgo</strong> (opciones avanzadas)</summary>
+    <div class="danger-actions">
+      <button type="button" id="btnLogoutAll" class="btn btn--outline-danger">Cerrar sesión en otros dispositivos</button>
+      <button type="button" id="btnDelete" class="btn btn--danger">Eliminar cuenta (mock)</button>
+    </div>
+    <p class="hint">Estas acciones son irreversibles o afectan tu sesión en otros navegadores.</p>
+  </details>
 </section>
-
-<script>
-window.initPerfilView = function(view){
-  if(view !== "seguridad") return;
-
-  const LS_PROFILE = "mts.user.profile";
-  const profile = JSON.parse(localStorage.getItem(LS_PROFILE) || "{}");
-
-  const f = document.getElementById("form-seguridad");
-  const currentEmail = document.getElementById("currentEmail");
-  const currentPassword = document.getElementById("currentPassword");
-  const newEmail = document.getElementById("newEmail");
-  const newPassword = document.getElementById("newPassword");
-
-  currentEmail.value = profile.email || "";
-
-  f.addEventListener("submit", (e) => {
-    e.preventDefault();
-
-    // validaciones simples
-    if(!currentEmail.value.trim() || !currentPassword.value){
-      (window.toast||alert)("Completa email y contraseña actuales.");
-      return;
-    }
-    if(newEmail.value && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(newEmail.value)){
-      (window.toast||alert)("Nuevo email inválido.");
-      return;
-    }
-    if(newPassword.value && newPassword.value.length < 8){
-      (window.toast||alert)("La nueva contraseña debe tener al menos 8 caracteres.");
-      return;
-    }
-
-    // mock: sólo guardamos el nuevo email en el perfil
-    if(newEmail.value){
-      profile.email = newEmail.value.trim();
-      localStorage.setItem(LS_PROFILE, JSON.stringify(profile));
-    }
-
-    currentPassword.value = "";
-    newPassword.value = "";
-    (window.toast||alert)("Seguridad actualizada (mock).");
-  });
-};
-</script>
