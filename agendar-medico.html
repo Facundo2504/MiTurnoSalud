@@ -26,12 +26,16 @@
   <main class="container">
     <h1>Agendar turno</h1>
 
-    <ol class="stepper" aria-label="Pasos del agendamiento">
-      <li><a href="agendar-especialidad.html">1. Especialidad</a></li>
-      <li aria-current="step">2. Médico</li>
-      <li>3. Fecha y hora</li>
-      <li>4. Confirmación</li>
+   <!-- MISMO BLOQUE EN agendar-especialidad.html, agendar-medico.html, agendar-fecha-hora.html y agendar-institucion.html -->
+  <div class="stepper" aria-label="Progreso de agendamiento">
+    <ol class="stepper__list">
+      <li class="stepper__item STEP1"><span>Paso 1 · Especialidad</span></li>
+      <li class="stepper__item STEP2"><span>Paso 2 · Médico</span></li>
+      <li class="stepper__item STEP3"><span>Paso 3 · Fecha y hora</span></li>
+      <li class="stepper__item STEP4"><span>Paso 4 · Institución</span></li>
     </ol>
+  </div>
+
 
     <section class="panel">
       <h2>Seleccioná un profesional</h2>

@@ -938,6 +938,42 @@ select { min-height: 46px; }
     right: auto;
   }
 }
+/* === STEPPER unificado === */
+.stepper { margin: 8px 0 18px; }
+.stepper__list { display:flex; gap:14px; list-style:none; padding:0; margin:0; }
+.stepper__item {
+  display:flex; align-items:center; gap:8px; padding:8px 12px;
+  border:1px solid var(--border); border-radius:999px; background:var(--panel);
+  color:var(--text); box-shadow: var(--shadow-1);
+}
+.stepper__item::before{
+  content: counter(step); counter-increment: step;
+  display:grid; place-items:center; width:28px; height:28px; border-radius:50%;
+  background:#fff; color:#111; font-weight:700;
+}
+.stepper__item span { white-space:nowrap; }
+.stepper__item--done { border-color: var(--brand-500); background: color-mix(in oklab, var(--panel) 85%, var(--brand-500) 12%); }
+.stepper__item--done::before { background: var(--brand-500); color:#fff; }
+.stepper__item--current { outline:2px solid var(--brand-500); }
+@media (max-width: 720px){
+  .stepper__list { flex-wrap:wrap; }
+  .stepper__item span { display:none; } /* en móvil sólo círculos */
+}
+/* Reseteo del contador para cada stepper */
+.stepper { counter-reset: step; }
+
+/* === Botones de horario (visibles y accesibles) === */
+.times { display:grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap:12px; margin-top:8px; }
+.time {
+  display:flex; align-items:center; justify-content:center; gap:10px;
+  padding:14px 12px; border:2px solid var(--border); border-radius:12px;
+  background: var(--panel); color: var(--text-strong); cursor:pointer;
+  transition: transform .08s ease, border-color .15s ease, background .15s ease;
+}
+.time input[type="radio"]{ appearance:none; width:18px; height:18px; border-radius:50%; border:2px solid var(--border); margin:0; }
+.time input[type="radio"]:checked{ border-color: var(--brand-500); background: var(--brand-500); }
+.time--selected, .time:hover { border-color: var(--brand-500); background: color-mix(in oklab, var(--panel) 85%, var(--brand-500) 10%); }
+.time.is-invalid { border-color: var(--danger); }
 
 
 

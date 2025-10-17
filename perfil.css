@@ -173,3 +173,23 @@ button:focus-visible, [role="tab"]:focus-visible {
 /* Preferencias de accesibilidad globales (controladas por JS si el usuario tilda opciones) */
 .high-contrast { filter: contrast(1.15) saturate(1.05); }
 .reduced-motion * { animation: none !important; transition: none !important; }
+
+/* === Barra de tabs del perfil en fila, sin superposición === */
+.perfil__nav ul[role="tablist"]{
+  display:flex; flex-wrap:wrap; gap:10px; padding:0; margin:0 0 12px; list-style:none;
+}
+.perfil__nav [role="tab"]{
+  background: var(--panel-2);
+  color: var(--text-strong);
+  border:1px solid var(--border);
+  border-radius: 10px;
+  padding: 10px 14px;
+  cursor: pointer;
+  white-space: nowrap;
+}
+.perfil__nav [role="tab"][aria-selected="true"]{
+  background: var(--panel);
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 2px color-mix(in oklab, var(--brand-500) 40%, transparent);
+}
+.perfil__view{ min-height: 260px; }
